@@ -10,9 +10,9 @@ import Foundation
 
 final class SignUpFactory {
 
-    var coordinator: Coordinating
+    var coordinator: any AppCoordinating
     
-    init(coordinator: Coordinating) {
+    init(coordinator: any AppCoordinating) {
         self.coordinator = coordinator
     }
     
@@ -25,7 +25,7 @@ final class SignUpFactory {
     }
     
     private func getSignupFlowUseCase() -> any SignupFlowUseCase {
-        return SignupFlowUseCaseImplementation(signUpUseCase: getSignupUseCase(), createProfileUseCase: ProfileFactory(coordinator: self.coordinator).getCreateProfileUseCase(), authenticationRepository: getAuthenticationRepository())
+        return SignupFlowUseCaseImplementation(signUpUseCase: getSignupUseCase(), createProfileUseCase: ProfileFactory().getCreateProfileUseCase(), uploadProfileImageUseCase: ProfileFactory().getUploadProfileImageUseCase(), authenticationRepository: getAuthenticationRepository())
     }
     
     private func getSignupUseCase() -> any SignUpUseCase {

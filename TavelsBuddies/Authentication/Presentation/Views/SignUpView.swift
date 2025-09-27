@@ -6,24 +6,64 @@
 //
 
 import SwiftUI
+import PhotosUI
+
 
 struct SignUpView: View {
     
     @StateObject var ViewModel : SignUpViewModel
     
+    @State private var selectedItem: PhotosPickerItem? = nil
+    @State private var profileImage: Image? = nil
+    
     var body: some View {
-        VStack(alignment: .center, spacing: 30) {
+        
+        ScrollView {
             
             VStack {
-                Image(systemName: "globe")
-                    .font(.largeTitle)
-                    .foregroundColor(.blue)
-                    .padding()
                 
-                Text("Tavels Buddies")
-                    .font(.largeTitle)
-                    .bold()
-                    .padding()
+                // 👇 PhotosPicker button
+                PhotosPicker(
+                    selection: $selectedItem,
+                    matching: .images,
+                    photoLibrary: .shared()) {
+                        
+                        VStack {
+                            if let profileImage = profileImage {
+                                profileImage
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 200, height: 200)
+                                    .clipShape(Circle())
+                            } else {
+                                Circle()
+                                    .fill(Color.gray.opacity(0.3))
+                                    .frame(width: 200, height: 200)
+                                    .overlay(
+                                        Image(systemName: "plus")
+                                            .font(.title)
+                                            .foregroundColor(.blue)
+                                    )
+                            }
+                            
+                            Text("Add Your Profile Image")
+                        }
+                       
+                    }
+                    .onChange(of: selectedItem) { newItem in
+                        Task {
+                            if let newItem,
+                               let data = try? await newItem.loadTransferable(type: Data.self) {
+                                
+                                ViewModel.profileImageData = data   // send to ViewModel
+                                
+                                if let uiImage = UIImage(data: data) {
+                                    profileImage = Image(uiImage: uiImage)  // show immediately
+                                }
+                            }
+                        }
+                    }
+                
             }
             
             VStack(alignment: .center,spacing: 30) {
@@ -58,11 +98,19 @@ struct SignUpView: View {
             }
             
         }
+        .navigationTitle("Join Tavels Buddies Now !")
+        .navigationBarTitleDisplayMode(.inline)
+        
     }
 }
 
+
 #Preview {
-    SignUpView(ViewModel: SignUpFactory(coordinator: AppCoordinator()).getSignupViewModel())
+    NavigationStack {
+        SignUpView(ViewModel: SignUpFactory(coordinator: AppCoordinator()).getSignupViewModel())
+    }
+    
 }
+
 
 

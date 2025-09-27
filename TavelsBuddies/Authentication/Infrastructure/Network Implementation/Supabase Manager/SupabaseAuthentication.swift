@@ -30,7 +30,7 @@ class SupabaseAuthentication {
         try await authClient?.signOut()
     }
     
-    func getCurrentUserID() -> String? {
-        return authClient?.currentUser?.id.uuidString
+    func getCurrentUserID() -> UUID? {
+        return authClient?.currentUser?.id
     }
 }

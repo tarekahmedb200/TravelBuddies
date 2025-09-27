@@ -10,33 +10,44 @@ import Foundation
 
 class SupabaseProfileServiceImplementation {
    
-    private let databaseCreate: DatabaseCreateService<ProfileDto>
-    private let databaseRead: DatabaseGetService<ProfileDto>
-    private let databaseUpdate: DatabaseUpdateService<ProfileDto>
-    private let databaseDelete: DatabaseDeleteService<ProfileDto>
+    private let databaseCreate: DatabaseCreateService
+    private let databaseRead: DatabaseGetService
+    private let databaseUpdate: DatabaseUpdateService
+    private let supabaseMediaManager: SupabaseMediaManager
+    private let profileTableName = SupabaseTableNames.profile.rawValue
+    
+    private let profileImageStorageName = SupabaseStorageNames.profileImages.rawValue
     
     init() {
-        databaseCreate = DatabaseCreateService<ProfileDto>(tableName: SupabaseTableNames.profile.rawValue)
-        databaseRead = DatabaseGetService<ProfileDto>(tableName: SupabaseTableNames.profile.rawValue)
-        databaseUpdate = DatabaseUpdateService<ProfileDto>(tableName: SupabaseTableNames.profile.rawValue)
-        databaseDelete = DatabaseDeleteService<ProfileDto>(tableName: SupabaseTableNames.profile.rawValue)
+        databaseCreate = DatabaseCreateService()
+        databaseRead = DatabaseGetService()
+        databaseUpdate = DatabaseUpdateService()
+        supabaseMediaManager = SupabaseMediaManager()
     }
 }
 
 extension SupabaseProfileServiceImplementation : ProfileService {
+    func getProfiles(ids: [UUID]) async throws -> [ProfileDto] {
+        try await databaseRead.getAll(tableName: profileTableName, ids: ids)
+    }
+    
     func createProfile(_ profileDto: ProfileDto) async throws {
-        try await databaseCreate.create(profileDto)
+        try await databaseCreate.create(profileDto, tableName: profileTableName)
     }
     
-    func getProfile(id: String) async throws -> ProfileDto {
-        return try await databaseRead.get(with: id)
+    func getProfile(id: UUID) async throws -> ProfileDto {
+        return try await databaseRead.getSingle(tableName: profileTableName, id: id)
     }
     
-    func updateProfile(id:String,_ profileDto: ProfileDto) async throws {
-        try await databaseUpdate.update(with: id, and: profileDto)
+    func updateProfile(id:UUID,_ profileDto: ProfileDto) async throws {
+        try await databaseUpdate.update(tableName: profileTableName, with: id, and: profileDto)
     }
     
-    func deleteProfile(id: String) async throws {
-        try await databaseDelete.delete(with: id)
+    func getProfileImage(profileID: UUID) async throws -> Data? {
+        try await supabaseMediaManager.getImage(storageName: profileImageStorageName, id: profileID)
+    }
+    
+    func uploadProfileImage(profileImageData: Data, profileID: UUID) async throws {
+        try await supabaseMediaManager.uploadImage(storageName: profileImageStorageName, id: profileID, imageData: profileImageData)
     }
 }

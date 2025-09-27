@@ -9,9 +9,9 @@ import Foundation
 
 final class SignInFactory {
     
-    var coordinator: Coordinating
+    var coordinator: any AppCoordinating
     
-    init(coordinator: Coordinating) {
+    init(coordinator: any AppCoordinating) {
         self.coordinator = coordinator
     }
     

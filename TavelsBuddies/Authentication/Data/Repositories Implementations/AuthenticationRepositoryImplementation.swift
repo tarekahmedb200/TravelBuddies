@@ -35,7 +35,7 @@ class AuthenticationRepositoryImplementation: AuthenticationRepository {
         userAuthenticationInfoCacheService.getUserAuthenticationInfo() != nil
     }
     
-    func getCurrentUserID() -> String? {
+    func getCurrentUserID() -> UUID? {
         authenticationService.getCurrentUserID()
     }
 

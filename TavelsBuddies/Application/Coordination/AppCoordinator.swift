@@ -10,21 +10,12 @@ import Combine
 import SwiftUI
 
 
-protocol Coordinating {
-    func push(to page: AppPages)
-    func popToRoot()
-}
-
-enum AppPages: Hashable {
-    case SignIn
-    case SignUp
-    case home
-}
-
-final class AppCoordinator: ObservableObject, Coordinating {
-    @Published var path = NavigationPath()
+final class AppCoordinator: ObservableObject, AppCoordinating {
     
-    func push(to page: AppPages) {
+    @Published var path = NavigationPath()
+    @Published var fullScreenPage: FullScreenAppPages?
+    
+    func push(to page: NavigationAppPages) {
         path.append(page)
     }
     
@@ -33,14 +24,32 @@ final class AppCoordinator: ObservableObject, Coordinating {
     }
     
     @ViewBuilder
-    func build(page: AppPages) -> some View {
+    func navigate(to page: NavigationAppPages) -> some View {
         switch page {
-        case .SignIn:
+        case .signIn:
             SignInFactory(coordinator: self).getSignInView()
-        case .SignUp:
+        case .signUp:
             SignUpFactory(coordinator: self).getSignupView()
-        case .home:
-            Text("Home")
         }
     }
+    
+    func presentFullScreenCover(_ page: FullScreenAppPages) {
+        self.fullScreenPage = page
+    }
+    
+    func dismissFullScreenCover() {
+        self.fullScreenPage = nil
+    }
+    
+    @ViewBuilder
+    func showFullScreenCover(_ page: FullScreenAppPages) -> some View {
+        
+        switch fullScreenPage {
+        case .mainView:
+             MainView()
+        case .none:
+            EmptyView()
+        }
+    }
+    
 }

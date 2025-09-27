@@ -24,7 +24,7 @@ class SupabaseAuthenticationServiceImplementation : AuthenticationService {
         try await supabaseAuthentication.SignUp(email: email, password: password)
     }
     
-    func getCurrentUserID() -> String? {
+    func getCurrentUserID() -> UUID? {
         supabaseAuthentication.getCurrentUserID()
     }
 }

@@ -18,11 +18,12 @@ class SignUpViewModel: ObservableObject {
     @Published var userName: String = ""
     @Published var description: String = ""
     @Published var address: String = ""
+    @Published var profileImageData : Data?
     
     private let signupFlowUseCase: SignupFlowUseCase
-    private let coordinator: Coordinating
+    private let coordinator: any AppCoordinating
     
-    init(signupFlowUseCase: SignupFlowUseCase,coordinator: Coordinating) {
+    init(signupFlowUseCase: SignupFlowUseCase ,coordinator: any AppCoordinating) {
         self.signupFlowUseCase = signupFlowUseCase
         self.coordinator = coordinator
     }
@@ -35,8 +36,9 @@ class SignUpViewModel: ObservableObject {
         Task {
             do {
                 let profileToCreate = Profile(username: userName, description: description,address: address)
-                try await self.signupFlowUseCase.execute(email: email, password: password, profile: profileToCreate)
-                self.coordinator.push(to: .home)
+                try await self.signupFlowUseCase.execute(email: email, password: password,profile: profileToCreate,profileImageData: profileImageData)
+                
+                self.coordinator.presentFullScreenCover(.mainView)
             } catch {
                 self.errorMessage = error.localizedDescription
             }

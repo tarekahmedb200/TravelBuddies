@@ -11,5 +11,5 @@ import Foundation
 protocol AuthenticationService {
     func SignIn(email: String, password: String) async throws
     func SignUp(email: String, password: String) async throws
-    func getCurrentUserID() -> String?
+    func getCurrentUserID() -> UUID?
 }

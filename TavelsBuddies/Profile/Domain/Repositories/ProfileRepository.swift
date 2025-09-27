@@ -7,10 +7,11 @@
 
 import Foundation
 
-
 protocol ProfileRepository {
     func create(profile: Profile) async throws
-    func get(id: String) async throws -> Profile
-    func update(id: String,profile: Profile) async throws
-    func delete(id: String) async throws
+    func getProfile(id: UUID) async throws -> Profile
+    func getProfiles(ids: [UUID]) async throws -> [Profile]
+    func update(id: UUID,profile: Profile) async throws
+    func getProfileImage(profileID: UUID) async throws -> Data?
+    func uploadProfileImage(profileImageData: Data,profileID: UUID) async throws
 }

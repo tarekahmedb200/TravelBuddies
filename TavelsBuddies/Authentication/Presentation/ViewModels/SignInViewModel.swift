@@ -17,21 +17,19 @@ class SignInViewModel: ObservableObject {
     
     private let signInUseCase: SignInUseCase
     private let checkIfSignedInUseCase: CheckIfSignedInUseCase
-    private let coordinator: Coordinating
+    private let coordinator: any AppCoordinating
     
-    init(signInUseCase: SignInUseCase, checkIfSignedInUseCase: CheckIfSignedInUseCase, coordinator: Coordinating) {
+    init(signInUseCase: SignInUseCase, checkIfSignedInUseCase: CheckIfSignedInUseCase, coordinator: any AppCoordinating) {
         self.signInUseCase = signInUseCase
         self.checkIfSignedInUseCase = checkIfSignedInUseCase
         self.coordinator = coordinator
-        
-        navigateToHomeIfSignedIn()
     }
     
     func SignIn() {
         Task {
             do {
                 try await self.signInUseCase.execute(email: self.email, password: self.password)
-                self.coordinator.push(to: .home)
+                self.coordinator.presentFullScreenCover(.mainView)
             } catch {
                 self.errorMessage = error.localizedDescription
             }
@@ -39,12 +37,12 @@ class SignInViewModel: ObservableObject {
     }
     
     func navigateToSignUp() {
-        coordinator.push(to: .SignUp)
+        coordinator.push(to: .signUp)
     }
     
-    private func navigateToHomeIfSignedIn() {
+    func navigateToHomeIfSignedIn() {
         if self.checkIfSignedInUseCase.execute() {
-            self.coordinator.push(to: .home)
+            self.coordinator.presentFullScreenCover(.mainView)
         }
     }
     

@@ -8,7 +8,7 @@
 import Foundation
 
 struct Profile {
-    var id: String?
+    var id: UUID?
     var username: String
     var description: String?
     var address: String

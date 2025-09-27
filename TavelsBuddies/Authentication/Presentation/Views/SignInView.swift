@@ -47,6 +47,9 @@ struct SignInView: View {
                 }
             }
         }
+        .onAppear {
+            ViewModel.navigateToHomeIfSignedIn()
+        }
     }
 }
 
