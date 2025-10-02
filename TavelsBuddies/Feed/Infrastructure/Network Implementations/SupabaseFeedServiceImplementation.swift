@@ -35,11 +35,13 @@ extension SupabaseFeedServiceImplementation: FeedService {
     }
     
     func getAllFeeds() async throws -> [FeedDto] {
-        try await databaseGet.getAll(tableName: feedTableName)
+        try await databaseGet.getArray(tableName: feedTableName)
     }
     
     func getFeedComments(feedID: UUID) async throws -> [FeedCommentDto] {
-        try await databaseGet.get(tableName: feedCommentTableName, id: feedID,idColumnName: FeedCommentDto.CodingKeys.feedID.rawValue)
+        try await databaseGet.getArray(tableName: feedCommentTableName,conditionsWithSingleValue: [
+            FeedCommentDto.CodingKeys.feedID.rawValue: feedID
+        ])
     }
     
     func createFeedComment(feedCommentDto: FeedCommentDto) async throws {
@@ -47,7 +49,9 @@ extension SupabaseFeedServiceImplementation: FeedService {
     }
     
     func getFeedsLikes(feedIDs: [UUID]) async throws -> [FeedLikeDto] {
-        try await databaseGet.getAll(tableName: feedLikeTableName, ids: feedIDs,idColumnName: FeedLikeDto.CodingKeys.feedID.rawValue)
+        try await databaseGet.getArray(tableName: feedCommentTableName,conditionsWithMutipleValues: [
+            FeedCommentDto.CodingKeys.feedID.rawValue: feedIDs
+        ])
     }
     
     func getAllFeedMedia(mediaType: MediaType, feedID: UUID) async throws -> [Data] {

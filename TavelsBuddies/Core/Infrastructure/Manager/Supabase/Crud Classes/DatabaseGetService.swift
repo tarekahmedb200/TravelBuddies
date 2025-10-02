@@ -17,55 +17,7 @@ class DatabaseGetService {
         self.supabaseManager = SupabaseManager()
     }
     
-    /// Fetch all records
-    func getAll<T: Codable>(tableName: String) async throws -> [T] {
-        guard let client = supabaseManager.getClient() else {
-            throw SupabaseDatabaseError.clientNotAvailable
-        }
-        
-        let response: [T] = try await client
-            .from(tableName)
-            .select()
-            .execute()
-            .value
-        
-        return response
-    }
-    
-    func getAll<T: Codable>(
-        tableName: String,
-        ids: [UUID],
-        idColumnName: String = "id"
-    ) async throws -> [T] {
-        guard let client = supabaseManager.getClient() else {
-            throw SupabaseDatabaseError.clientNotAvailable
-        }
-        
-        let response: [T] = try await client
-            .from(tableName)
-            .select()
-            .in(idColumnName, values: ids)
-            .execute()
-            .value
-        
-        return response
-    }
-    
-    func get<T: Codable>(tableName: String,id: UUID,idColumnName: String = "id") async throws -> T {
-        guard let client = supabaseManager.getClient() else {
-            throw SupabaseDatabaseError.clientNotAvailable
-        }
-        
-        let response: T = try await client
-            .from(tableName)
-            .select()
-            .eq(idColumnName, value: id)
-            .execute()
-            .value
-        
-        return response
-    }
-    
+   
     func getSingle<T: Codable>(tableName: String,id: UUID,idColumnName: String = "id") async throws -> T {
         guard let client = supabaseManager.getClient() else {
             throw SupabaseDatabaseError.clientNotAvailable
@@ -83,9 +35,10 @@ class DatabaseGetService {
     }
     
     
-    func get<T: Codable>(
+    func getArray<T: Codable>(
         tableName: String,
-        conditions: [String: Any]
+        conditionsWithSingleValue: [String: PostgrestFilterValue] = [:],
+        conditionsWithMutipleValues: [String: [PostgrestFilterValue]] = [:]
     ) async throws -> T {
         guard let client = supabaseManager.getClient() else {
             throw SupabaseDatabaseError.clientNotAvailable
@@ -94,12 +47,15 @@ class DatabaseGetService {
         var query = client.from(tableName).select()
         
         // Apply all conditions dynamically
-        for (column, value) in conditions {
-            query = query.eq(column, value: value as! PostgrestFilterValue)
+        for (column, value) in conditionsWithSingleValue {
+            query = query.eq(column, value: value )
+        }
+        
+        for (column, value) in conditionsWithMutipleValues {
+            query = query.in(column, values: value )
         }
         
         let response: T = try await query
-            .single()
             .execute()
             .value
         

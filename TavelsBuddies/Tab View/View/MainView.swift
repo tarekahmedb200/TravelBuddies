@@ -16,7 +16,7 @@ struct MainView: View {
                     Label("Feed", systemImage: "house.fill")
                 }
 
-            SearchView()
+            TripCoordinationView()
                 .tabItem {
                     Label("Search", systemImage: "magnifyingglass")
                 }
@@ -37,12 +37,6 @@ struct MainView: View {
                 }
         }
     }
-}
-
-// MARK: - Placeholder Views
-
-struct SearchView: View {
-    var body: some View { Text("Search Screen") }
 }
 
 struct ReelsView: View {

@@ -13,10 +13,12 @@ enum SupabaseTableNames : String {
     case feed = "Feed"
     case feedLike = "FeedLike"
     case feedComment = "FeedComment"
+    case trip = "Trip"
 }
 
 enum SupabaseStorageNames: String {
     case profileImages = "Profile_Images"
     case feedImages = "Feed_Images"
     case feedVideos = "Feed_Videos"
+    case tripImage = "Trip_Images"
 }

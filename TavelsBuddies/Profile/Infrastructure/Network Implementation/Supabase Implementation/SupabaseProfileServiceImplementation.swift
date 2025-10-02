@@ -28,7 +28,11 @@ class SupabaseProfileServiceImplementation {
 
 extension SupabaseProfileServiceImplementation : ProfileService {
     func getProfiles(ids: [UUID]) async throws -> [ProfileDto] {
-        try await databaseRead.getAll(tableName: profileTableName, ids: ids)
+        try await databaseRead.getArray(tableName: profileTableName,conditionsWithMutipleValues:
+                                            [
+                                                ProfileDto.CodingKeys.id.rawValue : ids
+                                            ]
+        )
     }
     
     func createProfile(_ profileDto: ProfileDto) async throws {

@@ -13,6 +13,14 @@ struct ProfileDto: Codable {
     var username: String
     var description: String?
     var address: String
+    
+    enum CodingKeys:  String,CodingKey {
+        case id
+        case username
+        case description
+        case address
+    }
+    
 }
 
 
