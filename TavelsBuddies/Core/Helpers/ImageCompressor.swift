@@ -10,7 +10,7 @@ import UIKit
 
 
 enum ImageCompressor {
-    static func resizeAndCompress(_ data: Data, maxSize: CGFloat) async -> Data? {
+    static func resizeAndCompress(_ data: Data, maxSize: CGFloat = 720) async -> Data? {
         // 1. Convert Data -> UIImage
         guard let uiImage = UIImage(data: data) else { return nil }
         

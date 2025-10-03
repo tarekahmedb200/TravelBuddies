@@ -17,8 +17,8 @@ enum SupabaseTableNames : String {
 }
 
 enum SupabaseStorageNames: String {
-    case profileImages = "Profile_Images"
-    case feedImages = "Feed_Images"
-    case feedVideos = "Feed_Videos"
-    case tripImage = "Trip_Images"
+    case profileImages = "ProfileImages"
+    case feedImages = "FeedImages"
+    case feedVideos = "FeedVideos"
+    case tripImage = "TripImages"
 }

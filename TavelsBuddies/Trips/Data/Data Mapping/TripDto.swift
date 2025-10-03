@@ -17,7 +17,7 @@ struct TripDto : Codable {
     let createdAt: Date
     let isFree: Bool
     let maxParticipants: Int
-    let tags: [String]
+    let tags: [TripTag]
     let price: Double
     let adminId: UUID
     let profilesIds: [UUID]

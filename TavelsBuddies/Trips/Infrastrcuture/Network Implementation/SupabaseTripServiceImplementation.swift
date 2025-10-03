@@ -13,7 +13,7 @@ class SupabaseTripServiceImplementation {
     private let databaseGet: DatabaseGetService
     private let supabaseMediaManager: SupabaseMediaManager
     
-    private let tripTableName = SupabaseTableNames.feed.rawValue
+    private let tripTableName = SupabaseTableNames.trip.rawValue
     private let tripImageStorageName = SupabaseStorageNames.tripImage.rawValue
     
     init() {

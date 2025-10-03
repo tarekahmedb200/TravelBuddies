@@ -63,12 +63,20 @@ class TripListViewModel: ObservableObject {
     }
     
     
+    func navigateToTripDetails(tripUIModel:TripUIModel) {
+        coordinator.push(to: .tripDetails(trip: tripUIModel))
+    }
+    
+    func showCreateFeed() {
+        coordinator.presentFullScreenCover(.createTrip)
+    }
+    
     private func handleNewTrips(_ trips: [Trip]) async throws {
         try await updateTheCache(trips)
         updateTripUIModels(trips)
     }
     
-    fileprivate func updateTheCache(_ trips: [Trip]) async throws {
+    private func updateTheCache(_ trips: [Trip]) async throws {
         try await withThrowingTaskGroup(of: Void.self) { group in
             group.addTask {
                 try await self.fillProfileUIModelCache(trips: trips)

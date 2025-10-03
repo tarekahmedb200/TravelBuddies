@@ -46,7 +46,7 @@ final class TripCoordinator: ObservableObject, TripCoordinating {
         
         switch fullScreenPage {
         case .createTrip:
-            EmptyView()
+            CreateTripFactory(coordinator: self).getCreateTripView()
         case .none:
             EmptyView()
         }

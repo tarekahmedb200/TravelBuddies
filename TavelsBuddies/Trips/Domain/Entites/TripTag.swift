@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum TripTag: String, CaseIterable {
+enum TripTag: String, CaseIterable, Codable {
     case business
     case vacation
     case family

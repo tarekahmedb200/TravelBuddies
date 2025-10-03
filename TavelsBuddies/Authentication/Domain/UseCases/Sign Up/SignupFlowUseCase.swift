@@ -34,7 +34,7 @@ extension SignupFlowUseCaseImplementation : SignupFlowUseCase {
         profile.id = authenticationRepository.getCurrentUserID()
         try await createProfileUseCase.execute(profile: profile)
         
-        if let profileImageData , let profileID = profile.id {
+        if let profileImageData, let profileCompressedImageData = await ImageCompressor.resizeAndCompress(profileImageData) , let profileID = profile.id {
             try await uploadProfileImageUseCase.execute(profileImageData: profileImageData, profileID: profileID)
         }
     }

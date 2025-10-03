@@ -23,8 +23,7 @@ struct TripListView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    // Add button action here
-                    print("Add tapped")
+                    viewModel.showCreateFeed()
                 }) {
                     Image(systemName: "plus.circle.fill")
                         .font(.title2)
@@ -32,6 +31,9 @@ struct TripListView: View {
             }
         }
         .navigationTitle("Trips")
+        .onAppear {
+            viewModel.loadTrips()
+        }
     }
 }
 

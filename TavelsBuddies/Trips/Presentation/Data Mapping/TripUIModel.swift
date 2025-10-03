@@ -25,7 +25,7 @@ struct TripUIModel: Identifiable {
     let occurrenceDate: String
     let isFree: Bool
     let maxParticipants: Int
-    let tags: [String]
+    let tags: [TripTag]
     let price: Double
     var adminUIModel: ProfileUIModel?
     let profileUIModels: [ProfileUIModel] = []
@@ -34,6 +34,7 @@ struct TripUIModel: Identifiable {
 }
 
 // Mock Trips
+
 extension TripUIModel {
     static let mockTrips: [TripUIModel] = [
         TripUIModel(
@@ -44,7 +45,7 @@ extension TripUIModel {
             occurrenceDate: "2025-10-15 09:00",
             isFree: false,
             maxParticipants: 20,
-            tags: ["Hiking", "Adventure", "Nature"],
+            tags: [.hiking, .adventure, .nature],   // ✅ using enum
             price: 50.0,
             adminUIModel: ProfileUIModel.mockData[2],
             currentParticipantCount: 8
@@ -57,7 +58,7 @@ extension TripUIModel {
             occurrenceDate: "2025-10-20 17:30",
             isFree: true,
             maxParticipants: 10,
-            tags: ["Boat Ride", "Culture", "Relax"],
+            tags: [.cruise, .cultural, .vacation],   // ✅ mapped correctly
             price: 0.0,
             adminUIModel: ProfileUIModel.mockData[1],
             currentParticipantCount: 5
@@ -70,13 +71,14 @@ extension TripUIModel {
             occurrenceDate: "2025-11-01 15:00",
             isFree: false,
             maxParticipants: 15,
-            tags: ["Safari", "Adventure", "Culture"],
+            tags: [.adventure, .cultural, .group],   // ✅ enum values
             price: 120.0,
             adminUIModel: ProfileUIModel.mockData[0],
             currentParticipantCount: 12
         )
     ]
 }
+
 
 
 

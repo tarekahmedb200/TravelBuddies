@@ -16,18 +16,28 @@ struct TripItemView: View {
         VStack(alignment: .leading, spacing: 12) {
             
             // Top image with price overlay
+            
             ZStack(alignment: .topLeading) {
-                Image("treeImage") // Replace with trip image if available
-                    .resizable()
-                    .clipped()
                 
-                Text(tripUIModel.price, format: .currency(code: "USD"))
-                    .font(.subheadline)
-                    .bold()
-                    .padding(8)
-                    .background(.ultraThinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
-                    .padding(8)
+                if let tripImage = tripUIModel.tripImage {
+                    tripImage
+                        .resizable()
+                        .clipped()
+                    
+                    Text(tripUIModel.price, format: .currency(code: "USD"))
+                        .font(.subheadline)
+                        .bold()
+                        .padding(8)
+                        .background(.ultraThinMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                        .padding(8)
+                }else {
+                    ProgressView {
+                        Text("Loading...")
+                    }
+                }
+                
+                
             }
             .frame(maxWidth: .infinity)
             .containerRelativeFrame(.vertical) { length, _ in
@@ -81,7 +91,7 @@ struct TripItemView: View {
                 // Tags
                 HStack {
                     ForEach(tripUIModel.tags, id: \.self) { tag in
-                        Text(tag)
+                        Text(tag.rawValue)
                             .font(.caption)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 4)
@@ -94,7 +104,7 @@ struct TripItemView: View {
             
             
         }
-
+        
         .background(
             Color(.systemBackground) // opaque background (white in light mode, black in dark mode)
         )
