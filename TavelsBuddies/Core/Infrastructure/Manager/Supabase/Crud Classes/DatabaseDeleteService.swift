@@ -16,44 +16,9 @@ class DatabaseDeleteService {
         self.supabaseManager = SupabaseManager()
     }
     
-    /// Delete a single record by ID
-    func deleteById(
-        tableName: String,
-        id: UUID,
-        idColumnName: String = "id"
-    ) async throws {
-        guard let client = supabaseManager.getClient() else {
-            throw SupabaseDatabaseError.clientNotAvailable
-        }
-        
-        _ = try await client
-            .from(tableName)
-            .delete()
-            .eq(idColumnName, value: id)
-            .execute()
-    }
-    
-    /// Delete records by condition (e.g., all by feedID)
-    func deleteWhere(
-        tableName: String,
-        columnName: String,
-        value: Any
-    ) async throws {
-        guard let client = supabaseManager.getClient() else {
-            throw SupabaseDatabaseError.clientNotAvailable
-        }
-        
-        _ = try await client
-            .from(tableName)
-            .delete()
-            .eq(columnName, value: value as! PostgrestFilterValue)
-            .execute()
-    }
-    
-
     func delete(
         tableName: String,
-        filters: [String: Any]
+        conditions: [String: PostgrestFilterValue] = [:]
     ) async throws {
         guard let client = supabaseManager.getClient() else {
             throw SupabaseDatabaseError.clientNotAvailable
@@ -61,9 +26,9 @@ class DatabaseDeleteService {
 
         var query = client.from(tableName).delete()
 
-        // Apply filters dynamically from the dictionary
-        for (column, value) in filters {
-            query = query.eq(column, value: value as! PostgrestFilterValue)
+        // Apply all conditions dynamically
+        for (column, value) in conditions {
+            query = query.eq(column, value: value)
         }
 
         _ = try await query.execute()

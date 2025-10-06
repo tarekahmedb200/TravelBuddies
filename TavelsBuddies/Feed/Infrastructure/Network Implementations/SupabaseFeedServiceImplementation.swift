@@ -64,10 +64,10 @@ extension SupabaseFeedServiceImplementation: FeedService {
     
     func unlikeFeed(feedID : UUID , profileID : UUID) async throws {
         try await databaseDelete.delete(
-            tableName: feedLikeTableName, filters:
+            tableName: feedLikeTableName, conditions:
                 [
-                    FeedLikeDto.CodingKeys.feedID.rawValue: feedID as Any,
-                    FeedLikeDto.CodingKeys.profileID.rawValue : profileID as Any
+                    FeedLikeDto.CodingKeys.feedID.rawValue: feedID,
+                    FeedLikeDto.CodingKeys.profileID.rawValue : profileID
                 ]
         )
     }

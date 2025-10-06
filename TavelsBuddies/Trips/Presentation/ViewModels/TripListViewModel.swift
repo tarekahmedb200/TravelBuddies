@@ -20,8 +20,11 @@ class TripListViewModel: ObservableObject {
     private let getProfilesUseCase: GetProfilesUseCase
     private let getProfileImageUseCase: GetProfileImageUseCase
     private let getTripImageUseCase: GetTripImageUseCase
+    private let getCurrentProfileUseCase : GetCurrentProfileUseCase
     
     private let coordinator: any TripCoordinating
+    
+    private var trips =  [Trip]()
     
     // caches
     private var profileUIModelCache: [UUID: ProfileUIModel] = [:]
@@ -35,6 +38,7 @@ class TripListViewModel: ObservableObject {
         getProfilesUseCase: GetProfilesUseCase,
         getProfileImageUseCase: GetProfileImageUseCase,
         getTripImageUseCase: GetTripImageUseCase,
+        getCurrentProfileUseCase : GetCurrentProfileUseCase,
         coordinator: any TripCoordinating
     ) {
         self.getAllTripsUseCase = getAllTripsUseCase
@@ -42,6 +46,7 @@ class TripListViewModel: ObservableObject {
         self.getProfilesUseCase = getProfilesUseCase
         self.getProfileImageUseCase = getProfileImageUseCase
         self.getTripImageUseCase = getTripImageUseCase
+        self.getCurrentProfileUseCase = getCurrentProfileUseCase
         self.coordinator = coordinator
     }
     
@@ -50,10 +55,10 @@ class TripListViewModel: ObservableObject {
         Task {
             do {
                 isLoading = true
-                let sortedTrips = try await getAllTripsUseCase.execute().sorted { $0.createdAt > $1.createdAt }
-                tripUIModels = sortedTrips.map { $0.toUIModel() }
+                trips = try await getAllTripsUseCase.execute().sorted { $0.createdAt > $1.createdAt }
+                tripUIModels = trips.map { $0.toUIModel() }
                 
-                try await handleNewTrips(sortedTrips)
+                try await handleNewTrips(trips)
             } catch {
                 print(error)
                 errorMessage = error.localizedDescription
@@ -62,9 +67,24 @@ class TripListViewModel: ObservableObject {
         }
     }
     
-    
     func navigateToTripDetails(tripUIModel:TripUIModel) {
-        coordinator.push(to: .tripDetails(trip: tripUIModel))
+        
+        Task {
+            
+            do {
+                let currentProfile = try  await getCurrentProfileUseCase.execute()
+                
+                if currentProfile.id == tripUIModel.adminUIModel?.id {
+                    coordinator.push(to: .tripDetails(tripUIModel: tripUIModel, isAdmin: true))
+                }else {
+                    coordinator.push(to: .tripDetails(tripUIModel: tripUIModel, isAdmin: false))
+                }
+            } catch {
+                print(error)
+                print(error.localizedDescription)
+                errorMessage = error.localizedDescription
+            }
+        }
     }
     
     func showCreateFeed() {

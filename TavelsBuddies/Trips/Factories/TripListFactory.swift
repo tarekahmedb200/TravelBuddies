@@ -27,6 +27,7 @@ final class TripListFactory {
             getProfilesUseCase: ProfileFactory().getGetProfilesUseCase(),
             getProfileImageUseCase: ProfileFactory().getGetCurrentProfileImagesUseCase(),
             getTripImageUseCase:getSearchTripImageUseCase(),
+            getCurrentProfileUseCase: ProfileFactory().getGetCurrentProfileUseCase(),
             coordinator: self.coordinator)
     }
  

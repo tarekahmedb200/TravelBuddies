@@ -28,8 +28,12 @@ final class TripCoordinator: ObservableObject, TripCoordinating {
         switch page {
         case .tripList:
             TripListFactory(coordinator: self).getFeedListView()
-        case .tripDetails(let feedUIModel):
-          EmptyView()
+        case .tripDetails(let tripUIModel,let isAdmin):
+            if isAdmin {
+                AdminTripDetailsFactory(coordinator: self, tripUIModel: tripUIModel).getAdminTripDetailsView()
+            }else {
+                MemberTripDetailsFactory(coordinator: self, tripUIModel: tripUIModel).getMemberTripDetailsView()
+            }
         }
     }
     

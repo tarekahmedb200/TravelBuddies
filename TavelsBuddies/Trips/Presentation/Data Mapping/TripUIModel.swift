@@ -28,7 +28,7 @@ struct TripUIModel: Identifiable {
     let tags: [TripTag]
     let price: Double
     var adminUIModel: ProfileUIModel?
-    let profileUIModels: [ProfileUIModel] = []
+    var profileIDS: [UUID]
     let currentParticipantCount : Int
     var tripImageData : Data?
 }
@@ -48,6 +48,7 @@ extension TripUIModel {
             tags: [.hiking, .adventure, .nature],   // ✅ using enum
             price: 50.0,
             adminUIModel: ProfileUIModel.mockData[2],
+            profileIDS: [],
             currentParticipantCount: 8
         ),
         TripUIModel(
@@ -61,7 +62,8 @@ extension TripUIModel {
             tags: [.cruise, .cultural, .vacation],   // ✅ mapped correctly
             price: 0.0,
             adminUIModel: ProfileUIModel.mockData[1],
-            currentParticipantCount: 5
+            profileIDS: [],
+            currentParticipantCount: 5,
         ),
         TripUIModel(
             id: UUID(),
@@ -74,8 +76,10 @@ extension TripUIModel {
             tags: [.adventure, .cultural, .group],   // ✅ enum values
             price: 120.0,
             adminUIModel: ProfileUIModel.mockData[0],
-            currentParticipantCount: 12
+            profileIDS: [],
+            currentParticipantCount: 12,
         )
+        
     ]
 }
 
@@ -94,6 +98,7 @@ extension Trip {
             maxParticipants: maxParticipants,
             tags: tags,
             price: price,
+            profileIDS: profilesIds,
             currentParticipantCount: profilesIds.count
         )
     }

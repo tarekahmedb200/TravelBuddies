@@ -32,6 +32,10 @@ extension TripRepositoryImplementation : TripRepository {
         }
     }
     
+    func getTrip(tripID:UUID) async throws -> Trip {
+        try await tripService.getTrip(tripID:tripID).toDomain()
+    }
+    
     func createTrip(trip: Trip) async throws {
         try await tripService.createTrip(tripDto: trip.toDto())
     }
@@ -43,5 +47,17 @@ extension TripRepositoryImplementation : TripRepository {
     
     func uploadTripImageData(tripID: UUID, imageData: Data) async throws {
         try await tripService.uploadTripImageData(tripID: tripID, imageData: imageData)
+    }
+    
+    func updateTrip(trip: Trip) async throws {
+        try await tripService.updateTrip(tripDto: trip.toDto())
+    }
+    
+    func deleteTrip(tripID: UUID) async throws {
+        try await tripService.deleteTrip(tripID: tripID)
+    }
+    
+    func deleteTripImageData(tripID: UUID) async throws {
+        try await tripService.deleteTripImageData(tripID: tripID)
     }
 }

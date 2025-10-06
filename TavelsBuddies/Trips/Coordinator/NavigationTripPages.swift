@@ -15,13 +15,13 @@ enum NavigationTripPages:  Equatable, Hashable , Identifiable  {
     }
     
     case tripList
-    case tripDetails(trip : TripUIModel)
+    case tripDetails(tripUIModel : TripUIModel,isAdmin:Bool)
     
     static func == (lhs: NavigationTripPages, rhs: NavigationTripPages) -> Bool {
         switch (lhs, rhs) {
         case (.tripList, .tripList):
             return true
-        case (.tripDetails(let lhsTrip), .tripDetails(let rhsTrip)):
+        case (.tripDetails(let lhsTrip,_), .tripDetails(let rhsTrip,_)):
             return lhsTrip.id == rhsTrip.id
         default:
             return false

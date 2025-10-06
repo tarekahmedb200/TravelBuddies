@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 
-struct ProfileUIModel: Identifiable {
+struct ProfileUIModel: Identifiable , Hashable {
     var id: UUID
     var username: String
     var description: String?

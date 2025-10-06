@@ -10,7 +10,7 @@ import SwiftUI
 
 struct TripListView: View {
     
-    @StateObject var viewModel : TripListViewModel
+    @StateObject var viewModel: TripListViewModel
     
     var body: some View {
         List(viewModel.tripUIModels) { trip in
@@ -18,6 +18,10 @@ struct TripListView: View {
                 .listRowSeparator(.hidden) // hide separators
                 .listRowInsets(EdgeInsets()) // edge-to-edge cards
                 .padding(.vertical, 8)
+                .onTapGesture {
+                    print("Clicked....")
+                    viewModel.navigateToTripDetails(tripUIModel: trip)
+                }
         }
         .listStyle(.plain)
         .toolbar {
@@ -25,9 +29,12 @@ struct TripListView: View {
                 Button(action: {
                     viewModel.showCreateFeed()
                 }) {
-                    Image(systemName: "plus.circle.fill")
-                        .font(.title2)
+                    Text("Create")
+                        .font(.headline)
+                        .foregroundColor(.black)
                 }
+                .buttonStyle(.glass)
+
             }
         }
         .navigationTitle("Trips")

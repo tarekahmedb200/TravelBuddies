@@ -16,37 +16,26 @@ class DatabaseUpdateService {
         self.supabaseManager = SupabaseManager()
     }
     
-    func update<T: Codable>(tableName: String,with id: UUID, and item: T,and idColumn: String = "id") async throws -> T {
+    
+    func update<T: Codable>(
+        tableName: String,
+        with item: T,
+        conditions: [String: PostgrestFilterValue] = [:]
+    ) async throws {
         guard let client = supabaseManager.getClient() else {
             throw SupabaseDatabaseError.clientNotAvailable
         }
         
-        let response: T = try await client
+        var query = try client
             .from(tableName)
             .update(item)
-            .eq(idColumn, value: id)
-            .select()
-            .single()
-            .execute()
-            .value
         
-        return response
+        // Apply all conditions dynamically
+        for (column, value) in conditions {
+            query = query.eq(column, value: value)
+        }
+        
+        try await query.execute()
     }
     
-//    /// Update records with filter
-//    func updateWhere(_ item: T, filter: String) async throws -> [T] {
-//        guard let client = supabaseManager.getClient() else {
-//            throw SupabaseDatabaseError.clientNotAvailable
-//        }
-//        
-//        let response: [T] = try await client
-//            .from(tableName)
-//            .update(item)
-//          //  .eq(filter, value: <#any PostgrestFilterValue#>)
-//            .select()
-//            .execute()
-//            .value
-//        
-//        return response
-//    }
 }

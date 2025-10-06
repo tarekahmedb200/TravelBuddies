@@ -52,4 +52,12 @@ class SupabaseMediaManager {
             .download(path: fileName)
     }
     
+    func deleteImage(storageName: String, id: UUID) async throws {
+        let fileName = "private/\(id.uuidString).jpg"
+        
+        try await supabaseManager.getClient()?.storage
+            .from(storageName)
+            .remove(paths: [fileName])
+    }
+    
 }

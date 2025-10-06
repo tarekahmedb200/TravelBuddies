@@ -44,7 +44,10 @@ extension SupabaseProfileServiceImplementation : ProfileService {
     }
     
     func updateProfile(id:UUID,_ profileDto: ProfileDto) async throws {
-        try await databaseUpdate.update(tableName: profileTableName, with: id, and: profileDto)
+      
+        try await databaseUpdate.update(tableName: profileTableName, with: profileDto, conditions: [
+            ProfileDto.CodingKeys.id.rawValue : id
+        ])
     }
     
     func getProfileImage(profileID: UUID) async throws -> Data? {

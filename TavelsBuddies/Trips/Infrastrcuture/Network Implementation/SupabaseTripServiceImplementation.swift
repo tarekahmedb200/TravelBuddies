@@ -11,6 +11,8 @@ import Foundation
 class SupabaseTripServiceImplementation {
     private let databaseCreate: DatabaseCreateService
     private let databaseGet: DatabaseGetService
+    private let databaseUpdate: DatabaseUpdateService
+    private let databaseDelete: DatabaseDeleteService
     private let supabaseMediaManager: SupabaseMediaManager
     
     private let tripTableName = SupabaseTableNames.trip.rawValue
@@ -19,17 +21,22 @@ class SupabaseTripServiceImplementation {
     init() {
         databaseCreate = DatabaseCreateService()
         databaseGet = DatabaseGetService()
+        databaseUpdate = DatabaseUpdateService()
+        databaseDelete = DatabaseDeleteService()
         supabaseMediaManager = SupabaseMediaManager()
     }
 }
 
 extension SupabaseTripServiceImplementation: TripService {
-   
-
+    
+    
     func getAllTrips() async throws -> [TripDto] {
         try await databaseGet.getArray(tableName: tripTableName)
     }
     
+    func getTrip(tripID:UUID) async throws -> TripDto {
+        try await databaseGet.getSingle(tableName: tripTableName, id: tripID)
+    }
     
     func searchTrips(tripFilter: TripFilter) async throws -> [TripDto] {
         guard let client = SupabaseManager().getClient() else {
@@ -75,6 +82,21 @@ extension SupabaseTripServiceImplementation: TripService {
     
     func uploadTripImageData(tripID: UUID,imageData: Data) async throws {
         try await supabaseMediaManager.uploadImage(storageName: tripImageStorageName, id: tripID, imageData: imageData)
+    }
+    
+    func updateTrip(tripDto: TripDto) async throws {
+        try await databaseUpdate.update(tableName: tripTableName, with: tripDto,
+                                        conditions: [TripDto.CodingKeys.id.rawValue : tripDto.id])
+    }
+    
+    func deleteTrip(tripID: UUID) async throws {
+        try await databaseDelete.delete(tableName: tripTableName,conditions:
+                                            [TripDto.CodingKeys.id.rawValue : tripID]
+        )
+    }
+    
+    func deleteTripImageData(tripID: UUID) async throws {
+        try await supabaseMediaManager.deleteImage(storageName: tripImageStorageName, id: tripID)
     }
     
 }
