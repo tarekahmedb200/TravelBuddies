@@ -34,8 +34,12 @@ extension SupabaseTripServiceImplementation: TripService {
         try await databaseGet.getArray(tableName: tripTableName)
     }
     
-    func getTrip(tripID:UUID) async throws -> TripDto {
-        try await databaseGet.getSingle(tableName: tripTableName, id: tripID)
+    func getTrip(tripID:UUID) async throws -> TripDto? {
+        
+        try await databaseGet.getSingle(tableName: tripTableName,
+                                        conditionsWithSingleValue: [
+                                            TripDto.CodingKeys.id.rawValue : tripID
+                                        ])
     }
     
     func searchTrips(tripFilter: TripFilter) async throws -> [TripDto] {

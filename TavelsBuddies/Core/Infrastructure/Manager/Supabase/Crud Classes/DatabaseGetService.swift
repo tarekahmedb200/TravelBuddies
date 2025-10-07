@@ -18,20 +18,35 @@ class DatabaseGetService {
     }
     
    
-    func getSingle<T: Codable>(tableName: String,id: UUID,idColumnName: String = "id") async throws -> T {
+    func getSingle<T: Codable>(
+        tableName: String,
+        conditionsWithSingleValue: [String: PostgrestFilterValue] = [:],
+        conditionsWithMutipleValues: [String: [PostgrestFilterValue]] = [:]
+    ) async throws -> T? {
         guard let client = supabaseManager.getClient() else {
             throw SupabaseDatabaseError.clientNotAvailable
         }
         
-        let response: T = try await client
-            .from(tableName)
-            .select()
-            .eq(idColumnName, value: id)
-            .single()
-            .execute()
-            .value
+        var query = client.from(tableName).select()
         
-        return response
+        for (column, value) in conditionsWithSingleValue {
+            query = query.eq(column, value: value)
+        }
+        
+        for (column, values) in conditionsWithMutipleValues {
+            query = query.in(column, values: values)
+        }
+        
+        do {
+            let response: T? = try await query
+                .single()
+                .execute()
+                .value
+            
+            return response
+        } catch {
+            return nil
+        }
     }
     
     

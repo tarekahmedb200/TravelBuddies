@@ -26,7 +26,7 @@ struct MainView: View {
                     Label("Reels", systemImage: "play.rectangle.fill")
                 }
 
-            ChatView()
+            ChatCoordinationView()
                 .tabItem {
                     Label("Chat", systemImage: "bubble.left.and.bubble.right.fill")
                 }

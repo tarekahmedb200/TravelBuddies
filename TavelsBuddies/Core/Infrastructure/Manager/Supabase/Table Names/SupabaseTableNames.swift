@@ -14,6 +14,8 @@ enum SupabaseTableNames : String {
     case feedLike = "FeedLike"
     case feedComment = "FeedComment"
     case trip = "Trip"
+    case chatMessage = "ChatMessage"
+    case chatRoom = "ChatRoom"
 }
 
 enum SupabaseStorageNames: String {
@@ -21,4 +23,5 @@ enum SupabaseStorageNames: String {
     case feedImages = "FeedImages"
     case feedVideos = "FeedVideos"
     case tripImage = "TripImages"
+    case chatRoomImages = "ChatRoomImages"
 }

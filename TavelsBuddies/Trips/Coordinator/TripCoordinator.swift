@@ -34,6 +34,8 @@ final class TripCoordinator: ObservableObject, TripCoordinating {
             }else {
                 MemberTripDetailsFactory(coordinator: self, tripUIModel: tripUIModel).getMemberTripDetailsView()
             }
+        case .tripGroupChat(let tripUIModel, let isAdmin):
+            ChatRoomFactory(coordinator: self, tripUIModel: tripUIModel).getChatRoomView()
         }
     }
     

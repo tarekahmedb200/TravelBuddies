@@ -11,6 +11,8 @@ import SwiftUI
 struct TripSubDetailsView: View {
     let tripUIModel: TripUIModel
     
+    var didEnterGroupChat: (() -> Void)
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             // Trip title
@@ -76,7 +78,7 @@ struct TripSubDetailsView: View {
                 Spacer()
                 
                 Button {
-                    // Chat group action
+                    didEnterGroupChat()
                 } label: {
                     HStack(spacing: 6) {
                         Image(systemName: "bubble.left.and.bubble.right.fill")
@@ -110,6 +112,6 @@ struct TripSubDetailsView: View {
 }
 
 #Preview {
-    TripSubDetailsView(tripUIModel:TripUIModel.mockTrips[0])
+    TripSubDetailsView(tripUIModel:TripUIModel.mockTrips[0], didEnterGroupChat: {})
                     
 }

@@ -32,8 +32,8 @@ extension TripRepositoryImplementation : TripRepository {
         }
     }
     
-    func getTrip(tripID:UUID) async throws -> Trip {
-        try await tripService.getTrip(tripID:tripID).toDomain()
+    func getTrip(tripID:UUID) async throws -> Trip? {
+        try await tripService.getTrip(tripID:tripID)?.toDomain()
     }
     
     func createTrip(trip: Trip) async throws {

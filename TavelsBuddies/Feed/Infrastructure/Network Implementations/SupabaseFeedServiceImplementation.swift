@@ -23,7 +23,7 @@ class SupabaseFeedServiceImplementation {
         databaseCreate = DatabaseCreateService()
         databaseGet = DatabaseGetService()
         databaseDelete = DatabaseDeleteService()
-        newlyInsertedDataObserver = NewlyInsertedDataObserver(tableName: SupabaseTableNames.feed.rawValue)
+        newlyInsertedDataObserver = NewlyInsertedDataObserver()
     }
 }
 

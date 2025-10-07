@@ -10,7 +10,7 @@ import Foundation
 
 protocol TripRepository {
     func getAllTrips() async throws -> [Trip]
-    func getTrip(tripID:UUID) async throws -> Trip
+    func getTrip(tripID:UUID) async throws -> Trip?
     func searchTrips(tripFilter : TripFilter) async throws -> [Trip]
     
     func createTrip(trip: Trip) async throws

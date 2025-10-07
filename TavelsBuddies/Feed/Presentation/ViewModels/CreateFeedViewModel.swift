@@ -48,7 +48,7 @@ class CreateFeedViewModel : ObservableObject {
             
             do {
                 let currentProfile = try await getCurrentProfileUseCase.execute()
-                profileUIModel  = currentProfile.toUIModel()
+                profileUIModel  = currentProfile?.toUIModel()
             } catch  {
                 errorMessage = error.localizedDescription
             }

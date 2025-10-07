@@ -189,7 +189,7 @@ class FeedDetailViewModel : ObservableObject {
     func getCurrentProfile() {
         Task {
             do {
-                currentProfileUIModel = try await getCurrentProfileUseCase.execute().toUIModel()
+                currentProfileUIModel = try await getCurrentProfileUseCase.execute()?.toUIModel()
                 currentProfileUIModel?.profileImageData = try await getCurrentProfileImageUseCase.execute()
             } catch  {
                 errorMessage = error.localizedDescription

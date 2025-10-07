@@ -9,7 +9,7 @@ import Foundation
 
 protocol ProfileRepository {
     func create(profile: Profile) async throws
-    func getProfile(id: UUID) async throws -> Profile
+    func getProfile(id: UUID) async throws -> Profile?
     func getProfiles(ids: [UUID]) async throws -> [Profile]
     func update(id: UUID,profile: Profile) async throws
     func getProfileImage(profileID: UUID) async throws -> Data?

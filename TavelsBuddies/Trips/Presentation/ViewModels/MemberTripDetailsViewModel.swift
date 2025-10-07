@@ -37,6 +37,10 @@ class MemberTripDetailsViewModel : ObservableObject {
         
     }
     
+    func enterTripGroupChat() {
+        coordinator.push(to: .tripGroupChat(tripUIModel: tripUIModel, isAdmin: false))
+    }
+    
     func handleJoiningTrip() {
         
         guard let currentProfileUIModel = currentProfileUIModel else {
@@ -80,7 +84,7 @@ class MemberTripDetailsViewModel : ObservableObject {
 
                 let (fetchedProfile, fetchedImageData) = try await (profile, imageData)
 
-                currentProfileUIModel = fetchedProfile.toUIModel()
+                currentProfileUIModel = fetchedProfile?.toUIModel()
                 currentProfileUIModel?.profileImageData = fetchedImageData
                 
             } catch {

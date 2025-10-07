@@ -30,9 +30,9 @@ extension ProfileRepositoryImplementation: ProfileRepository {
         try await profileService.createProfile(profile.toDto())
     }
     
-    func getProfile(id: UUID) async throws -> Profile {
+    func getProfile(id: UUID) async throws -> Profile? {
         let profileDto = try await profileService.getProfile(id: id)
-        return profileDto.toDomain()
+        return profileDto?.toDomain()
     }
     
     func update(id: UUID,profile: Profile) async throws {

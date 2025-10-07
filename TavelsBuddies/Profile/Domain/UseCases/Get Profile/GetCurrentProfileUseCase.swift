@@ -8,7 +8,7 @@
 import Foundation
 
 protocol GetCurrentProfileUseCase {
-    func execute() async throws -> Profile
+    func execute() async throws -> Profile?
 }
 
 class GetCurrentProfileUseCaseImplementation {
@@ -22,10 +22,10 @@ class GetCurrentProfileUseCaseImplementation {
 }
 
 extension GetCurrentProfileUseCaseImplementation: GetCurrentProfileUseCase {
-    func execute() async throws -> Profile {
+    func execute() async throws -> Profile? {
         
         guard let profileID = self.authenticationRepository.getCurrentUserID() else {
-            throw FeedRepositoryError.unknownError
+            return nil
         }
         
         return try await profileRepository.getProfile(id: profileID)

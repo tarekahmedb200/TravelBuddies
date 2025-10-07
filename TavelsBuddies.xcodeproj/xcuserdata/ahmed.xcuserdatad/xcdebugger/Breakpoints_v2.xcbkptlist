@@ -3,4 +3,66 @@
    uuid = "9D620160-7E73-466D-AEE0-1CA21CCFE9D1"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4DE8631B-8156-4299-8C03-709555829C4F"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TavelsBuddies/Chats/Infrastrcuture/Network Implementation/SupabaseChatServiceImplementation.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "68"
+            endingLineNumber = "68"
+            landmarkName = "getAllRooms(for:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "4DE8631B-8156-4299-8C03-709555829C4F - 3409e55183d3645c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for TavelsBuddies.SupabaseChatServiceImplementation.getAllRooms(for: Foundation.UUID) async throws -&gt; Swift.Array&lt;TavelsBuddies.ChatRoomDto&gt;"
+                  moduleName = "TavelsBuddies.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ahmed/Desktop/Portofolio/TravelBuddies/TavelsBuddies/Chats/Infrastrcuture/Network%20Implementation/SupabaseChatServiceImplementation.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "68"
+                  endingLineNumber = "68">
+               </Location>
+               <Location
+                  uuid = "4DE8631B-8156-4299-8C03-709555829C4F - 66ae3aacd30b67f6"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for TavelsBuddies.SupabaseChatServiceImplementation.getAllRooms(for: Foundation.UUID) async throws -&gt; Swift.Array&lt;TavelsBuddies.ChatRoomDto&gt;"
+                  moduleName = "TavelsBuddies.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ahmed/Desktop/Portofolio/TravelBuddies/TavelsBuddies/Chats/Infrastrcuture/Network%20Implementation/SupabaseChatServiceImplementation.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "68"
+                  endingLineNumber = "68">
+               </Location>
+               <Location
+                  uuid = "4DE8631B-8156-4299-8C03-709555829C4F - d8a60b0795fba852"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for TavelsBuddies.SupabaseChatServiceImplementation.getAllRooms(for: Foundation.UUID) async throws -&gt; Swift.Array&lt;TavelsBuddies.ChatRoomDto&gt;"
+                  moduleName = "TavelsBuddies.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ahmed/Desktop/Portofolio/TravelBuddies/TavelsBuddies/Chats/Infrastrcuture/Network%20Implementation/SupabaseChatServiceImplementation.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "68"
+                  endingLineNumber = "68">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

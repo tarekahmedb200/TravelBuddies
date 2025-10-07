@@ -9,7 +9,7 @@ import Foundation
 
 
 protocol GetTripUseCase {
-    func execute(tripID:UUID) async throws -> Trip
+    func execute(tripID:UUID) async throws -> Trip?
 }
 
 class GetTripUseCaseImplementation {
@@ -21,7 +21,7 @@ class GetTripUseCaseImplementation {
 }
 
 extension GetTripUseCaseImplementation : GetTripUseCase {
-    func execute(tripID:UUID) async throws -> Trip {
+    func execute(tripID:UUID) async throws -> Trip? {
         return try await tripRepository.getTrip(tripID:tripID)
     }
 }

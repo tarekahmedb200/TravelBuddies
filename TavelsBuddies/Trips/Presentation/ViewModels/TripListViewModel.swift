@@ -72,9 +72,9 @@ class TripListViewModel: ObservableObject {
         Task {
             
             do {
-                let currentProfile = try  await getCurrentProfileUseCase.execute()
+                let currentProfile = try await getCurrentProfileUseCase.execute()
                 
-                if currentProfile.id == tripUIModel.adminUIModel?.id {
+                if currentProfile?.id == tripUIModel.adminUIModel?.id {
                     coordinator.push(to: .tripDetails(tripUIModel: tripUIModel, isAdmin: true))
                 }else {
                     coordinator.push(to: .tripDetails(tripUIModel: tripUIModel, isAdmin: false))

@@ -39,8 +39,11 @@ extension SupabaseProfileServiceImplementation : ProfileService {
         try await databaseCreate.create(profileDto, tableName: profileTableName)
     }
     
-    func getProfile(id: UUID) async throws -> ProfileDto {
-        return try await databaseRead.getSingle(tableName: profileTableName, id: id)
+    func getProfile(id: UUID) async throws -> ProfileDto? {
+        return try await databaseRead.getSingle(tableName: profileTableName,
+                                                conditionsWithSingleValue: [
+                                                    ProfileDto.CodingKeys.id.rawValue : id
+                                                ])
     }
     
     func updateProfile(id:UUID,_ profileDto: ProfileDto) async throws {

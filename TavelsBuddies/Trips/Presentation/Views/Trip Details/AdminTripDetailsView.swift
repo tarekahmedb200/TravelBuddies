@@ -25,7 +25,9 @@ struct AdminTripDetailsView: View {
                         length * 0.5
                     }
                     
-                TripSubDetailsView(tripUIModel: viewModel.tripUIModel)
+                TripSubDetailsView(tripUIModel: viewModel.tripUIModel) {
+                    viewModel.enterTripGroupChat()
+                }
                     .padding()
                 
                 TripDetailSegmentedView(tabs: [

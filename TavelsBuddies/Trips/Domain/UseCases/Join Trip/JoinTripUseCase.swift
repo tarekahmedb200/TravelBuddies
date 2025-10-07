@@ -27,13 +27,12 @@ class JoinTripUseCaseImplementation {
 extension JoinTripUseCaseImplementation : JoinTripUseCase {
     func execute(tripID: UUID) async throws  {
         
-        guard let currentProfileID = try await getCurrentProfileUseCase.execute().id else {
+        guard let currentProfileID = try await getCurrentProfileUseCase.execute()?.id,
+              var updatedTrip = try await getTripUseCase.execute(tripID: tripID) else {
             return
         }
         
-        var updatedTrip = try await getTripUseCase.execute(tripID: tripID)
         updatedTrip.profilesIds.append(currentProfileID)
-        
         try await updateTripUseCase.execute(trip: updatedTrip)
     }
 }

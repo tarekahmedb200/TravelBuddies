@@ -14,7 +14,7 @@ final class NewlyInsertedDataObserver {
     private var channel: RealtimeChannelV2?
     
     
-    init(tableName: String) {
+    init() {
         self.supabaseManager = SupabaseManager()
     }
     
@@ -25,52 +25,57 @@ final class NewlyInsertedDataObserver {
     
     /// Start observing inserted rows for the given table.
     func start(tableName: String) -> AsyncStream<[String: Any]> {
+        makeStream(tableName: tableName, filter: nil)
+    }
+
+    /// Start observing inserted rows for the given table with a filter.
+    func start(tableName: String, columnName: String, value: UUID) -> AsyncStream<[String: Any]> {
+        makeStream(tableName: tableName, filter: .eq(columnName, value: value))
+    }
+
+    /// Shared implementation
+    private func makeStream(
+        tableName: String,
+        filter: RealtimePostgresFilter?
+    ) -> AsyncStream<[String: Any]> {
         AsyncStream { [weak self] continuation in
-            
-            guard let weakSelf = self else {
+            guard let self,
+                  let client = self.supabaseManager.getClient() else {
                 continuation.finish()
                 return
             }
-            
-            guard let client = weakSelf.supabaseManager.getClient() else {
-                continuation.finish()
-                return
-            }
-            
-            let channel = client.channel("\(tableName)")
-            weakSelf.channel = channel
-            
+
+            let channel = client.channel(tableName)
+            self.channel = channel
+
+            // Apply filter if provided
             let changeStream = channel.postgresChange(
                 AnyAction.self,
                 schema: "public",
-                table: tableName
+                table: tableName,
+                filter: filter
             )
-            
+
             Task {
                 do {
                     try await channel.subscribeWithError()
-                    
+
                     for try await change in changeStream {
-                        switch change {
-                        case .insert(let action):
+                        if case .insert(let action) = change {
                             continuation.yield(action.record)
-                        default:
-                            break
                         }
                     }
-                    
                 } catch {
                     continuation.finish()
                 }
             }
-            
+
             continuation.onTermination = { @Sendable _ in
-                Task {
-                    await channel.unsubscribe()
-                }
+                Task { await channel.unsubscribe() }
             }
         }
     }
+
     
     func stop() {
         Task { [weak self] in
