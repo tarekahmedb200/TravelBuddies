@@ -10,6 +10,8 @@ import SwiftUI
 
 struct TripSubDetailsView: View {
     let tripUIModel: TripUIModel
+    let isAdmin : Bool
+    var isJoined: Bool = false
     
     var didEnterGroupChat: (() -> Void)
     
@@ -77,22 +79,25 @@ struct TripSubDetailsView: View {
                 
                 Spacer()
                 
-                Button {
-                    didEnterGroupChat()
-                } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: "bubble.left.and.bubble.right.fill")
-                            .font(.subheadline)
-                        Text("Group Chat")
-                            .font(.headline)
-                            .fontWeight(.medium)
+                if isJoined && !isAdmin {
+                    Button {
+                        didEnterGroupChat()
+                    } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: "bubble.left.and.bubble.right.fill")
+                                .font(.subheadline)
+                            Text("Group Chat")
+                                .font(.headline)
+                                .fontWeight(.medium)
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .clipShape(Capsule())
                     }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .clipShape(Capsule())
                 }
+                
             }
             
             ScrollView(.horizontal,showsIndicators: false) {
@@ -112,6 +117,6 @@ struct TripSubDetailsView: View {
 }
 
 #Preview {
-    TripSubDetailsView(tripUIModel:TripUIModel.mockTrips[0], didEnterGroupChat: {})
+    TripSubDetailsView(tripUIModel:TripUIModel.mockTrips[0], isAdmin: false, didEnterGroupChat: {})
                     
 }

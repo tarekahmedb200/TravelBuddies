@@ -19,7 +19,7 @@ class ChatRoomViewModel : ObservableObject {
     @Published var message: String = ""
     
     private var getOrCreateOneToOneChatRoomUseCase: GetOrCreateOneToOneChatRoomUseCase?
-    private var getOrCreateGroupChatRoomUseCase: GetOrCreateGroupChatRoomUseCase?
+    private var prepareGroupChatRoomUseCase: PrepareGroupChatRoomUseCase?
     
     private let getChatRoomMessagesUseCase: GetChatRoomMessagesUseCase
     private let sendMessageUseCase: SendMessageUseCase
@@ -72,12 +72,12 @@ class ChatRoomViewModel : ObservableObject {
     
     
     convenience init(tripUIModel: TripUIModel,getChatRoomMessagesUseCase: GetChatRoomMessagesUseCase, sendMessageUseCase: SendMessageUseCase, observeMessagesUseCase: ObserveMessagesUseCase, getProfilesUseCase: GetProfilesUseCase, getProfileImageUseCase: GetProfileImageUseCase,
-                     getCurrentProfileUseCase : GetCurrentProfileUseCase,getOrCreateGroupChatRoomUseCase: GetOrCreateGroupChatRoomUseCase, coordinator: any NavigationCoordinating & FullScreenCoordinating) {
+                     getCurrentProfileUseCase : GetCurrentProfileUseCase,prepareGroupChatRoomUseCase: PrepareGroupChatRoomUseCase, coordinator: any NavigationCoordinating & FullScreenCoordinating) {
         
         self.init(getChatRoomMessagesUseCase: getChatRoomMessagesUseCase, sendMessageUseCase: sendMessageUseCase, observeMessagesUseCase: observeMessagesUseCase, getProfilesUseCase: getProfilesUseCase, getProfileImageUseCase: getProfileImageUseCase,getCurrentProfileUseCase: getCurrentProfileUseCase, coordinator: coordinator)
         
         self.tripUIModel = tripUIModel
-        self.getOrCreateGroupChatRoomUseCase = getOrCreateGroupChatRoomUseCase
+        self.prepareGroupChatRoomUseCase = prepareGroupChatRoomUseCase
         
         Task {
             await getOrCreateTripGroupChat()
@@ -129,7 +129,7 @@ class ChatRoomViewModel : ObservableObject {
         do {
             
             let groupChatMembersIDS = (tripUIModel.profileIDS + [adminID])
-            chatRoomUIModel = try await getOrCreateGroupChatRoomUseCase?.execute(chatRoomID: tripUIModel.id, name: tripUIModel.title, memberIDs: groupChatMembersIDS).toUIModel()
+            chatRoomUIModel = try await prepareGroupChatRoomUseCase?.execute(chatRoomID: tripUIModel.id, name: tripUIModel.title, memberIDs: groupChatMembersIDS).toUIModel()
             
             chatRoomUIModel?.chatRoomImageData = tripUIModel.tripImageData
             
@@ -277,6 +277,7 @@ class ChatRoomViewModel : ObservableObject {
             if let index = chatMessageUIModels.firstIndex(where: { $0.id == message.id }) {
                 chatMessageUIModels[index].profileUIModel = profileUIModelCache[message.senderID]
                 chatMessageUIModels[index].profileUIModel?.profileImageData = profilesImagesCache[message.senderID]
+                chatMessageUIModels[index].isCurrentUser = message.senderID == self.currentPofile?.id
             }
         }
         

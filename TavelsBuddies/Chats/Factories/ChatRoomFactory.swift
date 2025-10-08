@@ -68,7 +68,7 @@ final class ChatRoomFactory {
                                      getProfilesUseCase: ProfileFactory().getGetProfilesUseCase(),
                                      getProfileImageUseCase: ProfileFactory().getGetCurrentProfileImagesUseCase(),
                                      getCurrentProfileUseCase: ProfileFactory().getGetCurrentProfileUseCase(),
-                                     getOrCreateGroupChatRoomUseCase: getGetOrCreateGroupChatRoomUseCase(),
+                                     prepareGroupChatRoomUseCase:getPrepareGroupChatRoomUseCase(),
                                      coordinator: self.coordinator)
         }else {
             viewModel = ChatRoomViewModel(getChatRoomMessagesUseCase: getGetChatRoomMessagesUseCase(),
@@ -91,8 +91,12 @@ final class ChatRoomFactory {
         GetOneToOneChatRoomUseCaseImplementation(chatRepository: getChatRepository(), authenticationRepository: getAuthenticationRepository())
     }
     
-    private func getGetOrCreateGroupChatRoomUseCase() -> any GetOrCreateGroupChatRoomUseCase {
-        return GetOrCreateGroupChatRoomUseCaseImplementation(getSingleGroupChatRoomUseCase: getGetSingleGroupChatRoomUseCase(), createRoomUseCase: getCreateRoomUseCase())
+    private func getPrepareGroupChatRoomUseCase() -> any PrepareGroupChatRoomUseCase {
+        return PrepareGroupChatRoomUseCaseImplementation(getSingleGroupChatRoomUseCase: getGetSingleGroupChatRoomUseCase(), createRoomUseCase: getCreateRoomUseCase(), updateGroupChatRoomUseCase: getUpdateSingleGroupChatRoomUseCase())
+    }
+    
+    private func getUpdateSingleGroupChatRoomUseCase() -> any UpdateSingleGroupChatRoomUseCase {
+        return UpdateSingleGroupChatRoomUseCaseImplementation(chatRepository: getChatRepository())
     }
     
     private func getCreateRoomUseCase() -> any CreateRoomUseCase {

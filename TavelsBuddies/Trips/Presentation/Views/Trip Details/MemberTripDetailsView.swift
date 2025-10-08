@@ -25,7 +25,7 @@ struct MemberTripDetailsView: View {
                         length * 0.5
                     }
                     
-                TripSubDetailsView(tripUIModel: viewModel.tripUIModel) {
+                TripSubDetailsView(tripUIModel: viewModel.tripUIModel,isAdmin:false,isJoined:viewModel.checkIfJoined()) {
                     viewModel.enterTripGroupChat()
                 }
                 .padding()

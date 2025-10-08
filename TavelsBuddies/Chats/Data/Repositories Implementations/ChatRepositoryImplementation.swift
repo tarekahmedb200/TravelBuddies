@@ -69,4 +69,8 @@ extension ChatRepositoryImplementation: ChatRepository {
         try await chatService.uploadRoomImageData(chatRoomID: chatRoomID, imageData: imageData)
     }
     
+    func updateGroupChatRoom(chatRoom: ChatRoom) async throws {
+        try await chatService.updateGroupChatRoom(chatRoomDto: chatRoom.toDto())
+    }
+    
 }

@@ -13,6 +13,7 @@ struct ChatMessageUIModel: Identifiable, Equatable {
     let text: String
     let createdAt: Date
     var profileUIModel: ProfileUIModel?
+    var isCurrentUser: Bool = false
 }
 
 extension ChatMessageUIModel {
@@ -27,21 +28,24 @@ extension ChatMessageUIModel {
                 roomID: mockedRoomID,
                 text: "Hey everyone 👋",
                 createdAt: ISO8601DateFormatter().date(from: "2025-10-06T15:31:00Z") ?? Date(),
-                profileUIModel: nil
+                profileUIModel: nil,
+                isCurrentUser: false
             ),
             .init(
                 id: UUID(),
                 roomID: mockedRoomID,
                 text: "How’s the new Swift update?",
                 createdAt: ISO8601DateFormatter().date(from: "2025-10-06T15:32:00Z") ?? Date(),
-                profileUIModel: nil
+                profileUIModel: nil,
+                isCurrentUser: true
             ),
             .init(
                 id: UUID(),
                 roomID: mockedRoomID,
                 text: "It’s amazing! Async sequences are 🔥",
                 createdAt: ISO8601DateFormatter().date(from: "2025-10-06T15:33:00Z") ?? Date(),
-                profileUIModel: nil
+                profileUIModel: nil,
+                isCurrentUser: false
             )
         ]
     }

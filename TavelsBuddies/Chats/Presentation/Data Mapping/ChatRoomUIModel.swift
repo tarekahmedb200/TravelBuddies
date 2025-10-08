@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import SwiftUI
 
 struct ChatRoomUIModel: Identifiable, Equatable {
     let id: UUID
@@ -22,6 +22,14 @@ struct ChatRoomUIModel: Identifiable, Equatable {
     
     var chatRoomName : String {
         name ?? oneToOneProfileUIModel?.username ?? ""
+    }
+    
+    var chatRoomImage: Image? {
+        guard let data = chatRoomImageData,
+              let uiImage = UIImage(data: data) else {
+            return nil
+        }
+        return Image(uiImage: uiImage)
     }
     
 

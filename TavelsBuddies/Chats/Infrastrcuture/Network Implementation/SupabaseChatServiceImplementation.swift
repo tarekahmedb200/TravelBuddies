@@ -92,5 +92,12 @@ extension SupabaseChatServiceImplementation: ChatService {
         try await supabaseMediaManager.uploadImage(storageName: chatRoomImageStorageName, id: chatRoomID, imageData: imageData)
     }
     
+    
+    func updateGroupChatRoom(chatRoomDto: ChatRoomDto) async throws {
+        try await databaseUpdate.update(tableName: chatRoomTableName,
+                                        with: chatRoomDto,
+                                        conditions: [ChatRoomDto.CodingKeys.id.rawValue:chatRoomDto.id])
+    }
+    
 }
 

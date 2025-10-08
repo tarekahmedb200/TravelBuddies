@@ -15,15 +15,14 @@ struct ChatRoomView: View {
     @FocusState private var isInputFocused: Bool
     
     var body: some View {
-        NavigationView {
             VStack(spacing: 0) {
                 // Messages List
                 ScrollViewReader { proxy in
                     ScrollView {
                         LazyVStack(spacing: 8) {
-                            ForEach(viewModel.chatMessageUIModels) { message in
-                                ChatMessageView(message: message)
-                                    .id(message.id)
+                            ForEach(viewModel.chatMessageUIModels) { chatMessageUIModel in
+                                ChatMessageView(chatMessageUIModel: chatMessageUIModel)
+                                    .id(chatMessageUIModel.id)
                             }
                         }
                         .padding(.vertical)
@@ -56,7 +55,29 @@ struct ChatRoomView: View {
             }
             .navigationTitle("Chat Room")
             .navigationBarTitleDisplayMode(.inline)
-        }
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    HStack(spacing: 8) {
+                        if let image = viewModel.chatRoomUIModel?.chatRoomImage {
+                            image
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 36, height: 36)
+                                .clipShape(Circle())
+                        } else {
+                            Image(systemName: "person.circle.fill")
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 36, height: 36)
+                                .foregroundColor(.gray)
+                        }
+
+                        Text(viewModel.chatRoomUIModel?.chatRoomName ?? "")
+                            .font(.headline)
+                    }
+                }
+            }
+        
     }
     
     

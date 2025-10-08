@@ -10,10 +10,10 @@ import SwiftUI
 import SwiftUI
 
 struct ChatMessageView: View {
-    let message: ChatMessageUIModel
+    let chatMessageUIModel: ChatMessageUIModel
     
     var isCurrentUser: Bool {
-        true
+        chatMessageUIModel.isCurrentUser
     }
 
     var body: some View {
@@ -24,7 +24,7 @@ struct ChatMessageView: View {
             
             // Profile image for other users (left side)
             if !isCurrentUser {
-                if let profile = message.profileUIModel {
+                if let profile = chatMessageUIModel.profileUIModel {
                     if let profileImage = profile.profileImage {
                         profileImage
                             .resizable()
@@ -45,14 +45,14 @@ struct ChatMessageView: View {
             }
 
             VStack(alignment: isCurrentUser ? .trailing : .leading, spacing: 4) {
-                if !isCurrentUser, let profile = message.profileUIModel {
+                if !isCurrentUser, let profile = chatMessageUIModel.profileUIModel {
                     Text(profile.username)
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .padding(.leading, 4)
                 }
 
-                Text(message.text)
+                Text(chatMessageUIModel.text)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
                     .background(isCurrentUser ? Color.blue.opacity(0.9) : Color.gray.opacity(0.2))
@@ -60,7 +60,7 @@ struct ChatMessageView: View {
                     .cornerRadius(16)
                     .frame(maxWidth: 250, alignment: isCurrentUser ? .trailing : .leading)
 
-                Text(message.createdAt.toString().prefix(16)) // show date or time snippet
+                Text(chatMessageUIModel.createdAt.toString().prefix(16)) // show date or time snippet
                     .font(.caption2)
                     .foregroundColor(.secondary)
                     .padding(isCurrentUser ? .trailing : .leading, 8)
@@ -68,7 +68,7 @@ struct ChatMessageView: View {
             
             // Profile image for current user (right side)
             if isCurrentUser {
-                if let profile = message.profileUIModel {
+                if let profile = chatMessageUIModel.profileUIModel {
                     if let profileImage = profile.profileImage {
                         profileImage
                             .resizable()
@@ -98,5 +98,5 @@ struct ChatMessageView: View {
 }
 
 #Preview {
-    ChatMessageView(message: ChatMessageUIModel.mocks[0])
+    ChatMessageView(chatMessageUIModel: ChatMessageUIModel.mocks[0])
 }

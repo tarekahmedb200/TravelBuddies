@@ -18,6 +18,9 @@ protocol ChatRepository {
     func getRooms(for profileID: UUID) async throws -> [ChatRoom]
     
     func getGroupChatRoom(for chatRoomID: UUID) async throws -> ChatRoom?
+    
+    func updateGroupChatRoom(chatRoom: ChatRoom) async throws
+    
     func getOneToOneChatRoom(for membersIDS:[UUID]) async throws -> ChatRoom?
     
     func getRoomImageData(chatRoomID: UUID) async throws -> Data?
