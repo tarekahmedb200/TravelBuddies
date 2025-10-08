@@ -65,8 +65,8 @@ extension SupabaseChatServiceImplementation: ChatService {
     }
     
     func getAllRooms(for userId: UUID) async throws -> [ChatRoomDto] {
-        try await databaseGet.getArray(tableName: chatMessageTableName,conditionsWithSingleValue: [
-            ChatRoomDto.CodingKeys.membersIDS.rawValue: userId
+        try await databaseGet.getArray(tableName: chatRoomTableName,arrayContains: [
+            ChatRoomDto.CodingKeys.membersIDS.rawValue: [userId.uuidString]
         ])
     }
     
