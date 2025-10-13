@@ -17,7 +17,7 @@ struct FeedDetailsView: View {
                     feedUIModel: viewModel.feedUIModel,
                     clickLikeButton: {
                         viewModel.toggleLikeFeed(feedID: viewModel.feedUIModel.id)
-                    }
+                    }, clickProfile: { profileUIModel in  }
                 )
             }
 

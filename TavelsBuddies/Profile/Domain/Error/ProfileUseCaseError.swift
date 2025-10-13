@@ -7,8 +7,11 @@
 
 import Foundation
 
-
-enum ProfileCrudOperationError: Error {
+enum ProfileUseCaseError: Error {
+    case failedToGetUserID
     case emptyUserName
     case emptyAddress
+    case emptyMobileNumber
+    case emptyCountry
+    case invalidBirthDate
 }

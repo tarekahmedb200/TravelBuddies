@@ -12,4 +12,11 @@ struct Profile {
     var username: String
     var description: String?
     var address: String
+    var gender: Gender
+    var mobileNumber: String
+    var countryCodeNumber: String
+    var country: String
+    var birthDate: Date
 }
+
+

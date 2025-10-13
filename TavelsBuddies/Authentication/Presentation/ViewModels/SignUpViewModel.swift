@@ -9,21 +9,26 @@ import Foundation
 import SwiftUI
 import Combine
 
-
 class SignUpViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
+    
     @Published var email: String = ""
     @Published var password: String = ""
     @Published var userName: String = ""
     @Published var description: String = ""
     @Published var address: String = ""
-    @Published var profileImageData : Data?
+    @Published var gender: Gender = .male
+    @Published var selectedCountryCode: CountryCode = .getCurrentCountryCode()
+    @Published var mobileNumber: String = ""
+    @Published var country: String = ""
+    @Published var birthDate: Date = Date()
+    @Published var profileImageData: Data?
     
     private let signupFlowUseCase: SignupFlowUseCase
-    private let coordinator: any AppCoordinating
+    private let coordinator: any AuthenticationCoordinating
     
-    init(signupFlowUseCase: SignupFlowUseCase ,coordinator: any AppCoordinating) {
+    init(signupFlowUseCase: SignupFlowUseCase, coordinator: any AuthenticationCoordinating) {
         self.signupFlowUseCase = signupFlowUseCase
         self.coordinator = coordinator
     }
@@ -32,16 +37,31 @@ class SignUpViewModel: ObservableObject {
         coordinator.popToRoot()
     }
     
-    func handleSignupFlow() {
-        Task {
-            do {
-                let profileToCreate = Profile(username: userName, description: description,address: address)
-                try await self.signupFlowUseCase.execute(email: email, password: password,profile: profileToCreate,profileImageData: profileImageData)
-                
-                self.coordinator.presentFullScreenCover(.mainView)
-            } catch {
-                self.errorMessage = error.localizedDescription
-            }
+    @MainActor
+    func handleSignupFlow() async -> Bool {
+        isLoading = true
+        defer { isLoading = false }
+        
+        do {
+            try await signupFlowUseCase.execute(
+                email: email,
+                password: password,
+                username: userName,
+                description: description.isEmpty ? nil : description,
+                address: address,
+                gender: gender,
+                mobileNumber: mobileNumber,
+                countryCodeNumber: selectedCountryCode.countryCode,
+                country: country,
+                birthDate: birthDate,
+                profileImageData: profileImageData
+            )
+            
+            return true
+        } catch {
+            errorMessage = error.localizedDescription
+            return false
         }
     }
 }
+

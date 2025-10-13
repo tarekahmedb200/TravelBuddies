@@ -52,6 +52,10 @@ class FeedListViewModel : ObservableObject {
         self.coordinator = coordinator
     }
     
+    func enterProfileDetails(profileUIModel: ProfileUIModel) {
+        coordinator.push(to: .profileDetails(profileUIModel: profileUIModel))
+    }
+    
     func getCurrentProfile() {
         Task {
             do {

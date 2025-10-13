@@ -31,6 +31,8 @@ final class FeedCoordinator: ObservableObject, FeedCoordinating {
         case .feedDetails(let feedUIModel):
             
             FeedDetailsFactory(coordinator: self, feedUIModel: feedUIModel).getFeedDetailsView()
+        case .profileDetails(profileUIModel: let profileUIModel):
+            ProfileMainCoordinatorFactory(firstPage: .profileDetails(profileUIModel: profileUIModel),path: path).getProfileCoordinationView()
         }
     }
     

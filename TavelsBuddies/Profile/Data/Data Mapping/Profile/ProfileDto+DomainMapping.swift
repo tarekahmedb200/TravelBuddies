@@ -9,6 +9,6 @@ import Foundation
 
 extension ProfileDto {
     func toDomain() -> Profile {
-        Profile(id: id, username: username, description: description, address: address)
+        Profile(id: id, username: username, description: description, address: address,gender: gender,mobileNumber: mobileNumber, countryCodeNumber: countryCodeNumber,country: country,birthDate: birthDate)
     }
 }

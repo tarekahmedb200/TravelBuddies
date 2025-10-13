@@ -12,6 +12,7 @@ struct FeedItemView: View {
     var feedUIModel: FeedUIModel
     var clickLikeButton: () -> Void
     var clickCommentButton: (() -> Void)?
+    var clickProfile: (ProfileUIModel) -> Void
     var showCommentButton : Bool = true
     
     var body: some View {
@@ -49,7 +50,11 @@ struct FeedItemView: View {
                 Spacer()
             }
             .padding(.horizontal)
-            
+            .onTapGesture {
+                if let profileUIModel = feedUIModel.profileUIModel {
+                    clickProfile(profileUIModel)
+                }
+            }
             
             // Body
             VStack {
@@ -118,5 +123,5 @@ struct FeedItemView: View {
 }
 
 #Preview {
-    FeedItemView(feedUIModel: FeedUIModel.mockData[0],clickLikeButton: {},clickCommentButton: {})
+    FeedItemView(feedUIModel: FeedUIModel.mockData[0],clickLikeButton: {},clickCommentButton: {}, clickProfile: {ProfileUIModel in  } )
 }

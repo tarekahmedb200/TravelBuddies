@@ -15,6 +15,7 @@ enum NavigationFeedPages:  Equatable, Hashable , Identifiable  {
     
     case feedList
     case feedDetails(feed : FeedUIModel)
+    case profileDetails(profileUIModel: ProfileUIModel)
     
     static func == (lhs: NavigationFeedPages, rhs: NavigationFeedPages) -> Bool {
         switch (lhs, rhs) {
@@ -22,17 +23,14 @@ enum NavigationFeedPages:  Equatable, Hashable , Identifiable  {
             return true
         case (.feedDetails(let lhsFeed), .feedDetails(let rhsFeed)):
             return lhsFeed.id == rhsFeed.id
+        case (.profileDetails(let lhsProfile), .profileDetails(let rhsProfile)):
+            return lhsProfile.id == rhsProfile.id
         default:
             return false
         }
     }
     
     func hash(into hasher: inout Hasher) {
-        switch self {
-        case .feedList:
-            hasher.combine(self)
-        case .feedDetails:
-            hasher.combine(self)
-        }
+        hasher.combine(self)
     }
 }

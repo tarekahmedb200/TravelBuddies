@@ -13,10 +13,10 @@ protocol SignInUseCase {
 
 
 class SignInUseCaseImplementation {
-    var authenticationService: AuthenticationRepository
+    var authenticationRepository: AuthenticationRepository
     
-    init(authenticationService: AuthenticationRepository) {
-        self.authenticationService = authenticationService
+    init(authenticationRepository: AuthenticationRepository) {
+        self.authenticationRepository = authenticationRepository
     }
 }
 
@@ -25,16 +25,16 @@ extension SignInUseCaseImplementation: SignInUseCase {
     func execute(email: String, password: String) async throws {
         
         guard isNotEmpty(string: email) else {
-            throw AuthenticationError.emptyUsername
+            throw AuthenticationUseCaseError.emptyUsername
         }
         
         guard isNotEmpty(string: password) else {
-            throw AuthenticationError.emptyPassword
+            throw AuthenticationUseCaseError.emptyPassword
         }
         
-        try await authenticationService.SignIn(email: email, password: password)
+        try await authenticationRepository.SignIn(email: email, password: password)
         
-        authenticationService.saveUserAuthenticationInfo(email: email, password: password)
+        authenticationRepository.saveUserAuthenticationInfo(email: email, password: password)
     }
 }
 

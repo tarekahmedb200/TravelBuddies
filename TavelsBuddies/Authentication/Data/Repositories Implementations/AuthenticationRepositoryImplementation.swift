@@ -8,8 +8,8 @@
 import Foundation
 
 
-class AuthenticationRepositoryImplementation: AuthenticationRepository {
- 
+class AuthenticationRepositoryImplementation {
+    
     var authenticationService: AuthenticationService
     var userAuthenticationInfoCacheService: UserAuthenticationInfoCacheService
     
@@ -17,6 +17,9 @@ class AuthenticationRepositoryImplementation: AuthenticationRepository {
         self.authenticationService = authenticationService
         self.userAuthenticationInfoCacheService = userAuthenticationInfoCacheService
     }
+}
+
+extension AuthenticationRepositoryImplementation: AuthenticationRepository {
     
     func SignIn(email: String, password: String) async throws {
         try await authenticationService.SignIn(email: email, password: password)
@@ -38,5 +41,5 @@ class AuthenticationRepositoryImplementation: AuthenticationRepository {
     func getCurrentUserID() -> UUID? {
         authenticationService.getCurrentUserID()
     }
-
+    
 }

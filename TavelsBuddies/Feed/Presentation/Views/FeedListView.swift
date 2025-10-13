@@ -21,7 +21,10 @@ struct FeedListView: View {
                 }
                 , clickCommentButton: {
                     viewModel.navigateToFeedDetails(feedUIModel: feedUIModel)
-                })
+                },clickProfile: { profileUIModel in
+                    viewModel.enterProfileDetails(profileUIModel: profileUIModel)
+                }
+            )
         }
         .navigationTitle(Text("Feeds"))
         .navigationBarTitleDisplayMode(.large)

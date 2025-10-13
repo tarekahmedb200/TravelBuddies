@@ -16,34 +16,25 @@ class SignInViewModel: ObservableObject {
     @Published var password: String = ""
     
     private let signInUseCase: SignInUseCase
-    private let checkIfSignedInUseCase: CheckIfSignedInUseCase
-    private let coordinator: any AppCoordinating
+    private let coordinator: any AuthenticationCoordinating
     
-    init(signInUseCase: SignInUseCase, checkIfSignedInUseCase: CheckIfSignedInUseCase, coordinator: any AppCoordinating) {
+    init(signInUseCase: SignInUseCase, coordinator: any AuthenticationCoordinating) {
         self.signInUseCase = signInUseCase
-        self.checkIfSignedInUseCase = checkIfSignedInUseCase
         self.coordinator = coordinator
     }
     
-    func SignIn() {
-        Task {
-            do {
-                try await self.signInUseCase.execute(email: self.email, password: self.password)
-                self.coordinator.presentFullScreenCover(.mainView)
-            } catch {
-                self.errorMessage = error.localizedDescription
-            }
+    func SignIn() async -> Bool {
+        do {
+            try await self.signInUseCase.execute(email: self.email, password: self.password)
+            return true
+        } catch {
+            self.errorMessage = error.localizedDescription
+            return false
         }
     }
     
     func navigateToSignUp() {
         coordinator.push(to: .signUp)
-    }
-    
-    func navigateToHomeIfSignedIn() {
-        if self.checkIfSignedInUseCase.execute() {
-            self.coordinator.presentFullScreenCover(.mainView)
-        }
     }
     
 }

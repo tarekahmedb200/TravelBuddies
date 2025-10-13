@@ -8,7 +8,10 @@
 import Foundation
 import SwiftUI
 
-struct MainView: View {
+struct MainCoordinationView: View {
+    
+    @EnvironmentObject var appManager: AppManager
+    
     var body: some View {
         TabView {
             FeedCoordinationView()
@@ -31,28 +34,24 @@ struct MainView: View {
                     Label("Chat", systemImage: "bubble.left.and.bubble.right.fill")
                 }
 
-            ProfileView()
-                .tabItem {
-                    Label("Profile", systemImage: "person.crop.circle.fill")
-                }
         }
     }
 }
 
 struct ReelsView: View {
-    var body: some View { Text("Reels Screen") }
+    
+    @EnvironmentObject var appManager: AppManager
+    
+    var body: some View {
+        Button("Sign Out") {
+            appManager.signOut()
+        }
+    }
 }
 
-struct ChatView: View {
-    var body: some View { Text("Chat Screen") }
-}
-
-struct ProfileView: View {
-    var body: some View { Text("Profile Screen") }
-}
 
 // MARK: - Preview
 #Preview {
-    MainView()
+    MainCoordinationView()
 }
 
