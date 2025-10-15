@@ -8,7 +8,7 @@
 import Foundation
 
 import Combine
-
+//fff
 enum AppState: String {
     case isAuthenticated
     case isNotAuthenticated
