@@ -15,6 +15,7 @@ class CreateFeedViewModel : ObservableObject {
     @Published var content: String = ""
     @Published var errorMessage: String? = nil
     @Published var profileUIModel: ProfileUIModel?
+    @Published var feedMediaDataUIModels: [FeedMediaMetaDataUIModel] = []
     
     private let createFeedUseCase: CreateFeedUseCase
     private let getCurrentProfileUseCase : GetCurrentProfileUseCase
@@ -29,7 +30,7 @@ class CreateFeedViewModel : ObservableObject {
     func createFeed() {
         Task {
             do {
-                try await createFeedUseCase.execute(content: content)
+                try await createFeedUseCase.execute(content: content, feedMediaMetaDataUIModels: feedMediaDataUIModels)
                 coordinator.dismissFullScreenCover()
             } catch {
                 print(error)
@@ -42,6 +43,16 @@ class CreateFeedViewModel : ObservableObject {
         coordinator.dismissFullScreenCover()
     }
     
+    func addImage(itemID:UUID,imageData:Data) {
+        let feedMediaDataUIModel = FeedMediaMetaDataUIModel(id:itemID,mediaType: .image,feedImageData: imageData)
+        
+        feedMediaDataUIModels.append(feedMediaDataUIModel)
+    }
+    
+    func removeImage(feedMediaDataUIModel:FeedMediaMetaDataUIModel) {
+        feedMediaDataUIModels.removeAll { $0.id == feedMediaDataUIModel.id }
+    }
+ 
     func getCurrentProfile()  {
         
         Task {

@@ -13,15 +13,15 @@ protocol GetAllFeedsLikesUseCase {
 }
 
 class GetAllFeedsLikesUseCaseImplementation {
-    private let feedRepository: FeedRepository
+    private let feedLikeRepository: FeedLikeRepository
     
-    init(feedRepository: FeedRepository) {
-        self.feedRepository = feedRepository
+    init(feedLikeRepository: FeedLikeRepository) {
+        self.feedLikeRepository = feedLikeRepository
     }
 }
 
 extension GetAllFeedsLikesUseCaseImplementation : GetAllFeedsLikesUseCase {
     func execute(feedIDs: [UUID]) async throws -> [FeedLike] {
-        return try await feedRepository.getFeedsLikes(feedIDs: feedIDs)
+        return try await feedLikeRepository.getFeedsLikes(feedIDs: feedIDs)
     }
 }

@@ -12,15 +12,15 @@ protocol GetAllFeedCommentsUseCase {
 }
 
 class GetAllFeedCommentsUseCaseImplementation {
-    private let feedRepository: FeedRepository
+    private let feedCommentRepository: FeedCommentRepository
     
-    init(feedRepository: FeedRepository) {
-        self.feedRepository = feedRepository
+    init(feedCommentRepository: FeedCommentRepository) {
+        self.feedCommentRepository = feedCommentRepository
     }
 }
 
 extension GetAllFeedCommentsUseCaseImplementation : GetAllFeedCommentsUseCase {
     func execute(feedID: UUID) async throws -> [FeedComment] {
-        return try await feedRepository.getFeedComments(feedID: feedID)
+        return try await feedCommentRepository.getFeedComments(feedID: feedID)
     }
 }

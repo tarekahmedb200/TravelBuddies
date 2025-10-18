@@ -11,6 +11,7 @@ import Foundation
 enum SupabaseTableNames : String {
     case profile = "Profile"
     case feed = "Feed"
+    case feedMediaMetaData = "FeedMediaMetaData"
     case feedLike = "FeedLike"
     case feedComment = "FeedComment"
     case trip = "Trip"

@@ -13,11 +13,11 @@ protocol CreateFeedCommentUseCase {
 }
 
 class CreateFeedCommentUseCaseImplementation {
-    private let feedRepository: FeedRepository
+    private let feedCommentRepository: FeedCommentRepository
     private let authenticationRepository : AuthenticationRepository
     
-    init(feedRepository: FeedRepository,authenticationRepository: AuthenticationRepository) {
-        self.feedRepository = feedRepository
+    init(feedCommentRepository: FeedCommentRepository, authenticationRepository: AuthenticationRepository) {
+        self.feedCommentRepository = feedCommentRepository
         self.authenticationRepository = authenticationRepository
     }
 }
@@ -34,8 +34,8 @@ extension CreateFeedCommentUseCaseImplementation : CreateFeedCommentUseCase {
             throw FeedRepositoryError.unknownError
         }
         
-        let feedCommentToCreate = FeedComment(profileID: currentProfileID, content: content, feedID: feedID)
-        try await feedRepository.createFeedComment(feedComment: feedCommentToCreate)
+        let feedCommentToCreate = FeedComment(profileID: currentProfileID, comment: content, feedID: feedID)
+        try await feedCommentRepository.createFeedComment(feedComment: feedCommentToCreate)
     }
     
 }

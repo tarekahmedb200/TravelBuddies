@@ -12,10 +12,12 @@ final class FeedDetailsFactory {
     
     var coordinator: any FeedCoordinating
     var feedUIModel: FeedUIModel
+    private let dependencies: FactoryDependency
     
-    init(coordinator: any FeedCoordinating,feedUIModel: FeedUIModel) {
+    init(coordinator: any FeedCoordinating,feedUIModel: FeedUIModel, dependencies: FactoryDependency = FactoryDependency()) {
         self.coordinator = coordinator
         self.feedUIModel = feedUIModel
+        self.dependencies = dependencies
     }
     
     func getFeedDetailsView() -> FeedDetailsView {
@@ -26,62 +28,16 @@ final class FeedDetailsFactory {
         
         return FeedDetailViewModel(
             feedUIModel: self.feedUIModel,
-            createFeedCommentUseCase: getCreateFeedCommentUseCase(),
-            getAllFeedCommentsUseCase: getGetAllFeedCommentsUseCase(),
-            getProfilesUseCase: ProfileFactory().getGetProfilesUseCase(),
-            likeFeedUseCase: getLikeFeedUseCase(),
-            getCurrentProfileUseCase: ProfileFactory().getGetCurrentProfileUseCase(),
-            unlikeFeedUseCase: getUnLikeFeedUseCase(),
-            getCurrentProfileImageUseCase: ProfileFactory().getGetCurrentProfileImageUseCase(),
-            getProfileImageUseCase: ProfileFactory().getGetCurrentProfileImagesUseCase(),
-            observeNewlyInsertedFeedCommentsUseCase: getObserveNewlyInsertedFeedCommentsUseCase(),
+            createFeedCommentUseCase: dependencies.makeCreateFeedCommentUseCase(),
+            getAllFeedCommentsUseCase: dependencies.makeGetAllFeedCommentsUseCase(),
+            getProfilesUseCase: dependencies.profileFactory.getGetProfilesUseCase(),
+            likeFeedUseCase: dependencies.makeLikeFeedUseCase(),
+            getCurrentProfileUseCase: dependencies.profileFactory.getGetCurrentProfileUseCase(),
+            unlikeFeedUseCase: dependencies.makeUnLikeFeedUseCase(),
+            getCurrentProfileImageUseCase: dependencies.profileFactory.getGetCurrentProfileImageUseCase(),
+            getProfileImageUseCase: dependencies.profileFactory.getGetCurrentProfileImagesUseCase(),
+            observeNewlyInsertedFeedCommentsUseCase: dependencies.makeObserveNewlyInsertedFeedCommentsUseCase(),
             coordinator: self.coordinator)
     }
     
-    private func getObserveNewlyInsertedFeedCommentsUseCase() -> any ObserveNewlyInsertedFeedCommentsUseCase {
-        return ObserveNewlyInsertedFeedCommentsUseCaseImplementation(feedRepository: getFeedRepository())
-    }
-    
-    private func getCreateFeedCommentUseCase() -> any CreateFeedCommentUseCase {
-        return CreateFeedCommentUseCaseImplementation(feedRepository: getFeedRepository(), authenticationRepository: getAuthenticationRepository())
-    }
-    
-    private func getGetAllFeedCommentsUseCase() -> any GetAllFeedCommentsUseCase {
-        return GetAllFeedCommentsUseCaseImplementation(feedRepository: getFeedRepository())
-    }
-    
-    private func getLikeFeedUseCase() -> any LikeFeedUseCase {
-        return LikeFeedUseCaseImplementation(feedRepository: getFeedRepository())
-    }
-    
-    private func getUnLikeFeedUseCase() -> any UnLikeFeedUseCase {
-        return UnLikeFeedUseCaseImplementation(feedRepository: getFeedRepository())
-    }
-    
-   
-    private func getFeedRepository() -> any FeedRepository {
-        return FeedRepositoryImplementation(feedService: getAuthenticationService(), authenticationService: getAuthenticationService())
-    }
-    
-    private func getAuthenticationService() -> FeedService {
-        return SupabaseFeedServiceImplementation()
-    }
-    
-    private func getAuthenticationRepository() -> any AuthenticationRepository {
-        return AuthenticationRepositoryImplementation(
-            authenticationService: getAuthenticationService(),
-            userAuthenticationInfoCacheService: getUserAuthenticationInfoCacheService()
-        )
-    }
-    
-    private func getAuthenticationService() -> AuthenticationService {
-        return SupabaseAuthenticationServiceImplementation()
-    }
-    
-    private func getUserAuthenticationInfoCacheService() -> UserAuthenticationInfoCacheService {
-        return UserDefaultsCacheService()
-    }
-    
 }
-
-

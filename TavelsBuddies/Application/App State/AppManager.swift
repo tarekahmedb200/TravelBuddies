@@ -6,9 +6,8 @@
 //
 
 import Foundation
-
 import Combine
-//fff
+
 enum AppState: String {
     case isAuthenticated
     case isNotAuthenticated
@@ -17,8 +16,7 @@ enum AppState: String {
 final class AppManager: ObservableObject {
     static let shared = AppManager()
     private let key = "app_state"
-    private var cancellables = Set<AnyCancellable>()
-
+   
     @Published var state: AppState {
         didSet {
             UserDefaults.standard.set(state.rawValue, forKey: key)

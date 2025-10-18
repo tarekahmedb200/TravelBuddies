@@ -6,16 +6,19 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct CreateFeedView: View {
     
     @StateObject var viewModel: CreateFeedViewModel
+    @State private var selectedPhotoItems: [PhotosPickerItem] = []
+    @State private var maxNumbers: Int = 3
     
     var body: some View {
         NavigationStack {
             ScrollView {
                 //Header
-                HStack(alignment: .center,spacing: 20) {
+                HStack(alignment: .center, spacing: 20) {
                     
                     if let profileImage = viewModel.profileUIModel?.profileImage {
                         profileImage
@@ -24,7 +27,7 @@ struct CreateFeedView: View {
                             .frame(width: 50, height: 50)
                             .clipShape(Circle())
                             .border(Color.black, width: 0.5)
-                    }else {
+                    } else {
                         Circle()
                             .fill(Color.gray)
                             .stroke(Color.black, lineWidth: 0.5)
@@ -40,24 +43,35 @@ struct CreateFeedView: View {
                     Spacer()
                 }
                 
-                //Body
-                RoundedRectangle(cornerSize: CGSize(width: 10, height: 10))
-                    .fill(Color.gray.opacity(0.3))
-                    .frame(height: 300)
-                    .padding()
-                    .overlay {
-                        Button {
-                            
-                        } label: {
-                            VStack(spacing: 10) {
-                                Image(systemName: "camera.fill")
-                                    .font(.title)
-                                Text("Add Media")
-                                    .font(.title3)
+                //Body - Media Display Area
+                
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        ForEach(viewModel.feedMediaDataUIModels) { media in
+                            if let feedImage = media.feedImage {
+                                FeedImageItemView(image: feedImage) {
+                                    viewModel.removeImage(feedMediaDataUIModel: media)
+                                }
                             }
-                            .foregroundStyle(Color.black)
                         }
+                        
+                        PhotosPicker(selection: $selectedPhotoItems, maxSelectionCount: maxNumbers - viewModel.feedMediaDataUIModels.count, matching: .images, label: {
+                            VStack(spacing: 8) {
+                                Image(systemName: "plus.circle.fill")
+                                    .font(.title)
+                                Text("Add More")
+                                    .font(.caption)
+                            }
+                            .foregroundStyle(Color.blue)
+                            .frame(width: 120, height: 120)
+                            .background(Color.gray.opacity(0.2))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        })
+                        .disabled(viewModel.feedMediaDataUIModels.count == maxNumbers)
+                        
                     }
+                    .padding()
+                }
                 
                 
                 //Footer
@@ -83,9 +97,32 @@ struct CreateFeedView: View {
             .onAppear {
                 viewModel.getCurrentProfile()
             }
-            
+            .onChange(of: selectedPhotoItems) { oldValue, newValue in
+                handlePhotoSelection(newValue)
+            }
             
         }
+    }
+    
+    private func handlePhotoSelection(_ photoItems: [PhotosPickerItem]) {
+        Task {
+            for photoItem in photoItems {
+                do {
+                    if let data = try await photoItem.loadTransferable(type: Data.self) {
+                        let uuid = UUID()
+                        viewModel.addImage(itemID: uuid, imageData: data)
+                    }
+                } catch {
+                    print("Error loading photo: \(error)")
+                }
+            }
+            
+            selectedPhotoItems = []
+        }
+    }
+    
+    private func removePhoto(_ media: FeedMediaMetaDataUIModel) {
+        viewModel.removeImage(feedMediaDataUIModel: media)
     }
 }
 

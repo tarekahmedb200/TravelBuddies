@@ -9,10 +9,16 @@ import Foundation
 import SwiftUI
 
 struct FeedUIModel: Identifiable {
+    
+    var hasMedia : Bool {
+        feedMediaMetaDataUIModels.count > 0
+    }
+    
     var id: UUID
     var content: String
     var createAt: String
     var profileUIModel: ProfileUIModel? = nil
+    var feedMediaMetaDataUIModels: [FeedMediaMetaDataUIModel] = []
     var isLikedByCurrentProfile: Bool = false
     var likesCount: Int = 0
 }

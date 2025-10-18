@@ -15,15 +15,15 @@ protocol UnLikeFeedUseCase {
 }
 
 class UnLikeFeedUseCaseImplementation {
-    private let feedRepository: FeedRepository
+    private let feedLikeRepository: FeedLikeRepository
     
-    init(feedRepository: FeedRepository) {
-        self.feedRepository = feedRepository
+    init(feedLikeRepository: FeedLikeRepository) {
+        self.feedLikeRepository = feedLikeRepository
     }
 }
 
 extension UnLikeFeedUseCaseImplementation : UnLikeFeedUseCase {
     func execute(feedID: UUID) async throws  {
-        return try await feedRepository.unlikeFeed(feedID: feedID)
+        return try await feedLikeRepository.unlikeFeed(feedID: feedID)
     }
 }

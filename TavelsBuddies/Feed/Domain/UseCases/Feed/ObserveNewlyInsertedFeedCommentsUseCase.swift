@@ -13,15 +13,15 @@ protocol ObserveNewlyInsertedFeedCommentsUseCase {
 }
 
 class ObserveNewlyInsertedFeedCommentsUseCaseImplementation {
-    private let feedRepository: FeedRepository
+    private let feedCommentRepository: FeedCommentRepository
     
-    init(feedRepository: FeedRepository) {
-        self.feedRepository = feedRepository
+    init(feedCommentRepository: FeedCommentRepository) {
+        self.feedCommentRepository = feedCommentRepository
     }
 }
 
 extension ObserveNewlyInsertedFeedCommentsUseCaseImplementation : ObserveNewlyInsertedFeedCommentsUseCase {
     func execute() -> AsyncStream<FeedComment> {
-        return feedRepository.observeNewlyAddedFeedCommentsChanges()
+        return feedCommentRepository.observeNewlyAddedFeedCommentsChanges()
     }
 }

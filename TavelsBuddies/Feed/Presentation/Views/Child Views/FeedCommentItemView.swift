@@ -13,45 +13,61 @@ struct FeedCommentItemView: View {
     
     var body: some View {
         HStack(alignment: .top, spacing: 20) {
-            
-            if let profileImage = feedCommentUIModel.profileUIModel?.profileImage {
-                profileImage
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 40, height: 40)
-                    .clipShape(Circle())
-                    .border(Color.black, width: 0.5)
-            }else {
-                Circle()
-                    .fill(Color.gray)
-                    .stroke(Color.black, lineWidth: 0.5)
-                    .overlay {
-                        Text(feedCommentUIModel.profileUIModel?.username.first?.uppercased() ?? "")
-                    }
-                    .frame(width: 40, height: 40)
-            }
-            
-            VStack(alignment: .leading,spacing: 10) {
-                Text(feedCommentUIModel.profileUIModel?.username ?? "")
-                    .font(.title3)
-                    .bold()
+            avatar
                 
-                VStack(alignment: .leading,spacing: 15) {
-                    Text(feedCommentUIModel.content)
-                    
-                    Text(feedCommentUIModel.createdAt)
-                        .foregroundColor(.gray)
-                }
-                .font(.headline)
-                
-                
+            VStack(alignment: .leading, spacing: 10) {
+                usernameText
+                commentBody
             }
             
             Spacer()
         }
         .padding(.horizontal)
-        
-        
+    }
+}
+
+private extension FeedCommentItemView {
+    var avatar: some View {
+        Group {
+            if let image = feedCommentUIModel.profileUIModel?.profileImage {
+                image
+                    .resizable()
+                    .scaledToFill()
+                    .clipShape(Circle())
+                    .overlay(
+                        Circle()
+                            .stroke(Color.black.opacity(0.5), lineWidth: 0.5)
+                    )
+            } else {
+                Circle()
+                    .fill(Color.gray.opacity(0.3))
+                    .overlay(
+                        Text(feedCommentUIModel.profileUIModel?.username.first?.uppercased() ?? "")
+                            .font(.subheadline)
+                            .foregroundStyle(.primary)
+                    )
+                    .overlay(
+                        Circle()
+                            .stroke(Color.black.opacity(0.5), lineWidth: 0.5)
+                    )
+            }
+        }
+        .frame(width: 40, height: 40)
+    }
+    
+    var usernameText: some View {
+        Text(feedCommentUIModel.profileUIModel?.username ?? "")
+            .font(.title3)
+            .bold()
+    }
+    
+    var commentBody: some View {
+        VStack(alignment: .leading, spacing: 15) {
+            Text(feedCommentUIModel.comment)
+            Text(feedCommentUIModel.createdAt)
+                .foregroundColor(.gray)
+        }
+        .font(.headline)
     }
 }
 

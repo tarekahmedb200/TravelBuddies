@@ -10,14 +10,14 @@ import Foundation
 
 struct FeedCommentDto: Codable {
     let id: UUID
-    let content: String
+    let comment: String
     let createdAt: Date
     let profileID: UUID
     let feedID: UUID
     
     enum CodingKeys: String, CodingKey {
         case id
-        case content
+        case comment
         case createdAt = "created_at"
         case profileID = "profile_id"
         case feedID = "feed_id"
@@ -32,14 +32,14 @@ extension FeedCommentDto {
         }
         
         let id = try dictionary.decodeUUID(for: CodingKeys.id.rawValue)
-        let content = try dictionary.decodeString(for: CodingKeys.content.rawValue)
+        let content = try dictionary.decodeString(for: CodingKeys.comment.rawValue)
         let createdAt = try dictionary.decodeDate(for: CodingKeys.createdAt.rawValue)
         let profileID = try dictionary.decodeUUID(for: CodingKeys.profileID.rawValue)
         let feedID = try dictionary.decodeUUID(for: CodingKeys.feedID.rawValue)
         
         return FeedCommentDto(
             id: id,
-            content: content,
+            comment: content,
             createdAt: createdAt,
             profileID: profileID,
             feedID: feedID
@@ -50,14 +50,14 @@ extension FeedCommentDto {
 
 extension FeedCommentDto {
     func toDomain() -> FeedComment {
-        return FeedComment(id: id, profileID: profileID, content: content, createdAt: createdAt, feedID: feedID)
+        return FeedComment(id: id, profileID: profileID, comment: comment, createdAt: createdAt, feedID: feedID)
     }
 }
 
 
 extension FeedComment {
     func toDto () -> FeedCommentDto {
-        return FeedCommentDto(id: id, content: content, createdAt: createdAt, profileID: profileID, feedID: feedID)
+        return FeedCommentDto(id: id, comment: comment, createdAt: createdAt, profileID: profileID, feedID: feedID)
     }
 }
 

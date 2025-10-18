@@ -23,9 +23,19 @@ struct FeedListView: View {
                     viewModel.navigateToFeedDetails(feedUIModel: feedUIModel)
                 },clickProfile: { profileUIModel in
                     viewModel.enterProfileDetails(profileUIModel: profileUIModel)
+                } , onEdit:  {
+                    
+                } , onDelete: {
+                    
                 }
             )
         }
+        .onAppear {
+            viewModel.loadFeeds()
+            viewModel.getCurrentProfile()
+            viewModel.observeNewlyInsertedFeeds()
+        }
+        .listStyle(.inset)
         .navigationTitle(Text("Feeds"))
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
@@ -41,12 +51,7 @@ struct FeedListView: View {
                 .background(Color.blue)
             }
         }
-        .onAppear {
-            viewModel.loadFeeds()
-            viewModel.getCurrentProfile()
-            viewModel.observeNewlyInsertedFeeds()
-        }
-        .listStyle(.inset)
+        
         
     }
 }

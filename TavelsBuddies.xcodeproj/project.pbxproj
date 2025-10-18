@@ -12,10 +12,12 @@
 		DF35A9BA2E7BCBB800A7E056 /* Realtime in Frameworks */ = {isa = PBXBuildFile; productRef = DF35A9B92E7BCBB800A7E056 /* Realtime */; };
 		DF35A9BC2E7BCBB800A7E056 /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = DF35A9BB2E7BCBB800A7E056 /* Storage */; };
 		DF35A9BE2E7BCBB800A7E056 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = DF35A9BD2E7BCBB800A7E056 /* Supabase */; };
+		F5C04D792EA1A39A00C5E01E /* FeedImageItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C04D782EA1A39A00C5E01E /* FeedImageItemView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		DF35A99F2E7BC72300A7E056 /* TavelsBuddies.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TavelsBuddies.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F5C04D782EA1A39A00C5E01E /* FeedImageItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedImageItemView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -47,6 +49,7 @@
 			children = (
 				DF35A9A12E7BC72300A7E056 /* TavelsBuddies */,
 				DF35A9A02E7BC72300A7E056 /* Products */,
+				F5C04D782EA1A39A00C5E01E /* FeedImageItemView.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -140,6 +143,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5C04D792EA1A39A00C5E01E /* FeedImageItemView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
