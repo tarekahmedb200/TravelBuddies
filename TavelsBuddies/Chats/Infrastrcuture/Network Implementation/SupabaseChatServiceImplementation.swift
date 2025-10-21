@@ -13,7 +13,7 @@ class SupabaseChatServiceImplementation {
     private let databaseGet: DatabaseGetService
     private let databaseUpdate: DatabaseUpdateService
     private let databaseDelete: DatabaseDeleteService
-    private let newlyInsertedDataObserver: NewlyInsertedDataObserver
+    private let newlyInsertedDataObserver: SupabaseDataObserver
     private let supabaseMediaManager: SupabaseMediaManager
     
     private let chatMessageTableName = SupabaseTableNames.chatMessage.rawValue
@@ -26,7 +26,7 @@ class SupabaseChatServiceImplementation {
         databaseUpdate = DatabaseUpdateService()
         databaseDelete = DatabaseDeleteService()
         supabaseMediaManager = SupabaseMediaManager()
-        newlyInsertedDataObserver = NewlyInsertedDataObserver()
+        newlyInsertedDataObserver = SupabaseDataObserver()
     }
 }
 
@@ -46,7 +46,7 @@ extension SupabaseChatServiceImplementation: ChatService {
         let stream = newlyInsertedDataObserver.start(tableName: chatMessageTableName,columnName: ChatMessageDto.CodingKeys.roomID.rawValue,value: roomId)
         return AsyncStream { continuation in
             Task {
-                for await chatMessageJson in stream {
+                for await (chatMessageJson,crudType) in stream {
                     do {
                         let chatMessageDto = try ChatMessageDto.from(dictionary: chatMessageJson)
                         continuation.yield(chatMessageDto)

@@ -24,16 +24,15 @@ struct FeedListView: View {
                 },clickProfile: { profileUIModel in
                     viewModel.enterProfileDetails(profileUIModel: profileUIModel)
                 } , onEdit:  {
-                    
+                    viewModel.showUpdateFeed(feedUIModel: feedUIModel)
                 } , onDelete: {
-                    
+                    viewModel.deleteFeedOperation(feedUIModel: feedUIModel)
                 }
             )
         }
         .onAppear {
             viewModel.loadFeeds()
             viewModel.getCurrentProfile()
-            viewModel.observeNewlyInsertedFeeds()
         }
         .listStyle(.inset)
         .navigationTitle(Text("Feeds"))

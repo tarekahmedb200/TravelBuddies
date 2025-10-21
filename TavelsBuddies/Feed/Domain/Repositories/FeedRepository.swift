@@ -12,5 +12,7 @@ protocol FeedRepository {
     func updateFeed(feed: Feed) async throws
     func deleteFeed(feedID: UUID) async throws
     func getAllFeeds() async throws -> [Feed]
-    func observeNewlyAddedFeedChanges() -> AsyncStream<Feed>
+    func observeFeedChanges() -> AsyncStream<(Feed,CrudObservationOperationType)>
+    func getSingleFeed(feedId: UUID) async throws -> Feed?
 }
+

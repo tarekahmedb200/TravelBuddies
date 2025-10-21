@@ -14,7 +14,7 @@ class SupabaseFeedCommentServiceImplementation {
     private let databaseGet: DatabaseGetService
     private let databaseDelete: DatabaseDeleteService
     private let databaseUpdate: DatabaseUpdateService
-    private let newlyInsertedDataObserver: NewlyInsertedDataObserver
+    private let newlyInsertedDataObserver: SupabaseDataObserver
     
     private let feedTableName = SupabaseTableNames.feed.rawValue
     private let feedLikeTableName = SupabaseTableNames.feedLike.rawValue
@@ -25,7 +25,7 @@ class SupabaseFeedCommentServiceImplementation {
         databaseGet = DatabaseGetService()
         databaseDelete = DatabaseDeleteService()
         databaseUpdate = DatabaseUpdateService()
-        newlyInsertedDataObserver = NewlyInsertedDataObserver()
+        newlyInsertedDataObserver = SupabaseDataObserver()
     }
 }
 
@@ -69,7 +69,7 @@ extension SupabaseFeedCommentServiceImplementation: FeedCommentService {
         let stream = newlyInsertedDataObserver.start(tableName: feedCommentTableName)
         return AsyncStream { continuation in
             Task {
-                for await feedCommentJson in stream {
+                for await (feedCommentJson,crudType) in stream {
                     do {
                         let feedCommentDto = try FeedCommentDto.from(dictionary: feedCommentJson)
                         continuation.yield(feedCommentDto)

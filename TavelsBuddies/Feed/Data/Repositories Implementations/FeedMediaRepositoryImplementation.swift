@@ -17,6 +17,10 @@ class FeedMediaRepositoryImplementation {
 }
 
 extension FeedMediaRepositoryImplementation: FeedMediaRepository {
+    func deleteFeedMediaDataDto(feedMediaDataID: UUID) async throws {
+        try await feedMediaService.deleteFeedMediaDataDto(feedMediaDataID: feedMediaDataID)
+    }
+    
     func createFeedMediaData(feedMediaData: FeedMediaMetaData) async throws {
         try await feedMediaService.createFeedMediaDataDto(feedMediaData: feedMediaData.toDto())
     }

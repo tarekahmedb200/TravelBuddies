@@ -78,8 +78,8 @@ final class FactoryDependency {
     // MARK: - Feed Use Cases
     
     // Feeds list and stream
-    func makeObserveNewlyInsertedFeedsUseCase() -> any ObserveNewlyInsertedFeedsUseCase {
-        ObserveNewlyInsertedFeedsUseCaseImplementation(feedRepository: feedRepository)
+    func makeObserveNewlyInsertedFeedsUseCase() -> any ObserveFeedsChangesUseCase {
+        ObserveFeedsChangesUseCaseImplementation(feedRepository: feedRepository)
     }
     
     func makeGetAllFeedsUseCase() -> any GetAllFeedsUseCase {
@@ -104,6 +104,10 @@ final class FactoryDependency {
         GetActualFeedMediaUseCaseImplementation(feedMediaRepository: feedMediaRepository)
     }
     
+    func makeDeleteActualFeedMediaUseCase() -> any DeleteActualFeedMediaUseCase {
+        DeleteActualFeedMediaUseCaseImplementation(feedMediaRepository: feedMediaRepository)
+    }
+    
     // Create Feed
     func makeCreateFeedUseCase() -> any CreateFeedUseCase {
         CreateFeedUseCaseImplementation(
@@ -111,6 +115,14 @@ final class FactoryDependency {
             uploadActualFeedMediaUseCase: makeUploadActualFeedMediaUseCase(),
             feedRepository: feedRepository,
             authenticationRepository: authenticationRepository)
+    }
+    
+    // Delete Feed
+    func makeDeleteFeedUseCase() -> any DeleteFeedUseCase {
+        DeleteFeedUseCaseImplementation(
+            feedRepository: feedRepository,
+            deleteActualFeedMediaUseCase: makeDeleteActualFeedMediaUseCase()
+        )
     }
     
     //Media
@@ -142,5 +154,26 @@ final class FactoryDependency {
     
     func makeObserveNewlyInsertedFeedCommentsUseCase() -> any ObserveNewlyInsertedFeedCommentsUseCase {
         ObserveNewlyInsertedFeedCommentsUseCaseImplementation(feedCommentRepository: feedCommentRepository)
+    }
+    
+    // MARK: - Additional Use Cases needed for Update Feed
+    
+    func makeDeleteFeedMediaMetaDataUseCase() -> any DeleteFeedMediaMetaDataUseCase {
+        DeleteFeedMediaMetaDataUseCaseImplementation(feedMediaRepository: feedMediaRepository)
+    }
+    
+    func makeGetSingleFeedUseCase() -> any GetSingleFeedUseCase {
+        GetSingleFeedUseCaseImplementation(feedRepository: feedRepository)
+    }
+    
+    func makeUpdateFeedUseCase() -> any UpdateFeedUseCase {
+        UpdateFeedUseCaseImplementation(
+            feedRepository: feedRepository,
+            createFeedMediaMetaDataUseCase: makeCreateFeedMediaMetaDataUseCase(),
+            uploadActualFeedMediaUseCase: makeUploadActualFeedMediaUseCase(),
+            deleteActualFeedMediaUseCase: makeDeleteActualFeedMediaUseCase(),
+            deleteFeedMediaMetaDataUseCase: makeDeleteFeedMediaMetaDataUseCase(),
+            getSingleFeedUseCase: makeGetSingleFeedUseCase()
+        )
     }
 }

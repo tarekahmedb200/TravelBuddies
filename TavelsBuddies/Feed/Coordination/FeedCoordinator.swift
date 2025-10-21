@@ -50,6 +50,9 @@ final class FeedCoordinator: ObservableObject, FeedCoordinating {
         switch fullScreenPage {
         case .createFeed:
             CreateFeedFactory(coordinator: self).getCreateFeedView()
+        case .updateFeed(let feedUIModel, let onDismiss):
+            UpdateFeedFactory(coordinator: self, feedUIModel: feedUIModel).getUpdateFeedView()
+                .onDisappear(perform: onDismiss)
         case .none:
             EmptyView()
         }

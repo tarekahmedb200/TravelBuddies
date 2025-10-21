@@ -37,6 +37,13 @@ final class FeedDetailsFactory {
             getCurrentProfileImageUseCase: dependencies.profileFactory.getGetCurrentProfileImageUseCase(),
             getProfileImageUseCase: dependencies.profileFactory.getGetCurrentProfileImagesUseCase(),
             observeNewlyInsertedFeedCommentsUseCase: dependencies.makeObserveNewlyInsertedFeedCommentsUseCase(),
+            // Newly required dependencies
+            getSingleFeedUseCase: dependencies.makeGetSingleFeedUseCase(),
+            getFeedMediaDatasUseCase: dependencies.makeFeedMediaDatasUseCase(),
+            getActualFeedMediaUseCase: dependencies.makeGetActualFeedMediaUseCase(),
+            getAllFeedsLikesUseCase: dependencies.makeGetAllFeedsLikesUseCase(),
+            // Delete feed use case
+            deleteFeedUseCase: dependencies.makeDeleteFeedUseCase(),
             coordinator: self.coordinator)
     }
     

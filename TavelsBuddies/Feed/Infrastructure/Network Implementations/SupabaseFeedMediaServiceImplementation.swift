@@ -13,7 +13,7 @@ class SupabaseFeedMediaServiceImplementation {
     private let databaseCreate: DatabaseCreateService
     private let databaseGet: DatabaseGetService
     private let databaseDelete: DatabaseDeleteService
-    private let newlyInsertedDataObserver: NewlyInsertedDataObserver
+    private let newlyInsertedDataObserver: SupabaseDataObserver
     private let supabaseMediaManager: SupabaseMediaManager
     
     private let feedMediaMetaDataTableName = SupabaseTableNames.feedMediaMetaData.rawValue
@@ -26,13 +26,19 @@ class SupabaseFeedMediaServiceImplementation {
         databaseCreate = DatabaseCreateService()
         databaseGet = DatabaseGetService()
         databaseDelete = DatabaseDeleteService()
-        newlyInsertedDataObserver = NewlyInsertedDataObserver()
+        newlyInsertedDataObserver = SupabaseDataObserver()
         supabaseMediaManager = SupabaseMediaManager()
     }
 }
 
 
 extension SupabaseFeedMediaServiceImplementation: FeedMediaService {
+    func deleteFeedMediaDataDto(feedMediaDataID: UUID) async throws {
+        try await databaseDelete.delete(tableName: feedMediaMetaDataTableName, conditions: [
+            FeedMediaMetaDataDto.CodingKeys.id.rawValue: feedMediaDataID
+        ])
+    }
+    
     func createFeedMediaDataDto(feedMediaData: FeedMediaMetaDataDto) async throws {
         try await databaseCreate.create(feedMediaData, tableName: feedMediaMetaDataTableName)
     }

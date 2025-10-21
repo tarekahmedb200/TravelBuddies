@@ -9,7 +9,7 @@ import SwiftUI
 
 struct FeedDetailsView: View {
     @StateObject var viewModel: FeedDetailViewModel
-
+    
     var body: some View {
         List {
             Section {
@@ -17,16 +17,19 @@ struct FeedDetailsView: View {
                     feedUIModel: viewModel.feedUIModel,
                     clickLikeButton: {
                         viewModel.toggleLikeFeed(feedID: viewModel.feedUIModel.id)
-                    }, clickProfile: { profileUIModel in
-                        
-                    }, onEdit: {
-                        
-                    } , onDelete: {
-                        
+                    },
+                    clickProfile: { profileUIModel in
+                        // Optional: navigate to profile if needed
+                    },
+                    onEdit: {
+                        viewModel.showUpdateFeed()
+                    },
+                    onDelete: {
+                        viewModel.deleteFeed()
                     }
                 )
             }
-
+            
             Section {
                 ForEach(viewModel.feedCommentUIModels) { feedCommentUIModel in
                     FeedCommentItemView(feedCommentUIModel: feedCommentUIModel)
@@ -54,9 +57,6 @@ struct FeedDetailsView: View {
     }
 }
 
-
 #Preview {
     FeedDetailsView(viewModel: FeedDetailsFactory(coordinator: FeedCoordinator(), feedUIModel: FeedUIModel.mockData[0]).getFeedFeedDetailsViewModel())
 }
-
-

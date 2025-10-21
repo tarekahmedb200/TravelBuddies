@@ -18,6 +18,9 @@ class FeedRepositoryImplementation {
 
 extension FeedRepositoryImplementation: FeedRepository {
     
+    func getSingleFeed(feedId: UUID) async throws -> Feed? {
+        try await feedService.getSingleFeed(feedId: feedId)?.toDomain()
+    }
 
     func createFeed(feed: Feed) async throws {
         try await feedService.createFeed(feed: feed.toDto())
@@ -39,13 +42,13 @@ extension FeedRepositoryImplementation: FeedRepository {
         try await feedService.deleteFeed(feedID: feedID)
     }
     
-    func observeNewlyAddedFeedChanges() -> AsyncStream<Feed> {
-        let feedDtoStream = feedService.observeNewlyAddedFeedChanges()
+    func observeFeedChanges() -> AsyncStream<(Feed,CrudObservationOperationType)> {
+        let feedDtoStream = feedService.observeFeedChanges()
         
         return AsyncStream { continuation in
             Task {
-                for await feedDto in feedDtoStream {
-                    continuation.yield(feedDto.toDomain())
+                for await (feedDto,crudType) in feedDtoStream {
+                    continuation.yield((feedDto.toDomain(),crudType))
                 }
                 continuation.finish()
             }
@@ -53,3 +56,4 @@ extension FeedRepositoryImplementation: FeedRepository {
     }
     
 }
+

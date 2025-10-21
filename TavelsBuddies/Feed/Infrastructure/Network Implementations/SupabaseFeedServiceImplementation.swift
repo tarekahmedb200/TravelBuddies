@@ -14,7 +14,7 @@ class SupabaseFeedServiceImplementation {
     private let databaseGet: DatabaseGetService
     private let databaseDelete: DatabaseDeleteService
     private let databaseUpdate: DatabaseUpdateService
-    private let newlyInsertedDataObserver: NewlyInsertedDataObserver
+    private let supabaseDataObserver: SupabaseDataObserver
     
     private let feedTableName = SupabaseTableNames.feed.rawValue
     private let feedLikeTableName = SupabaseTableNames.feedLike.rawValue
@@ -25,12 +25,17 @@ class SupabaseFeedServiceImplementation {
         databaseGet = DatabaseGetService()
         databaseDelete = DatabaseDeleteService()
         databaseUpdate = DatabaseUpdateService()
-        newlyInsertedDataObserver = NewlyInsertedDataObserver()
+        supabaseDataObserver = SupabaseDataObserver()
     }
 }
 
 
 extension SupabaseFeedServiceImplementation: FeedService {
+    func getSingleFeed(feedId: UUID) async throws -> FeedDto? {
+        try await databaseGet.getSingle(tableName: feedTableName,conditionsWithSingleValue: [
+            FeedDto.CodingKeys.id.rawValue : feedId
+        ])
+    }
     
     func createFeed(feed: FeedDto) async throws {
         try await databaseCreate.create(feed, tableName: feedTableName)
@@ -56,14 +61,14 @@ extension SupabaseFeedServiceImplementation: FeedService {
     }
     
  
-    func observeNewlyAddedFeedChanges() -> AsyncStream<FeedDto> {
-        let stream = newlyInsertedDataObserver.start(tableName: feedTableName)
+    func observeFeedChanges() -> AsyncStream<(FeedDto,CrudObservationOperationType)> {
+        let stream = supabaseDataObserver.start(tableName: feedTableName)
         return AsyncStream { continuation in
             Task {
-                for await feedJson in stream {
+                for await (feedJson,crudType) in stream {
                     do {
                         let feedDto = try FeedDto.from(dictionary: feedJson)
-                        continuation.yield(feedDto)
+                        continuation.yield((feedDto,crudType))
                     } catch {
                         print("Decode error:", error)
                     }

@@ -13,7 +13,7 @@ class SupabaseFeedLikeServiceImplementation {
     private let databaseCreate: DatabaseCreateService
     private let databaseGet: DatabaseGetService
     private let databaseDelete: DatabaseDeleteService
-    private let newlyInsertedDataObserver: NewlyInsertedDataObserver
+    private let newlyInsertedDataObserver: SupabaseDataObserver
     
     private let feedTableName = SupabaseTableNames.feed.rawValue
     private let feedLikeTableName = SupabaseTableNames.feedLike.rawValue
@@ -23,7 +23,7 @@ class SupabaseFeedLikeServiceImplementation {
         databaseCreate = DatabaseCreateService()
         databaseGet = DatabaseGetService()
         databaseDelete = DatabaseDeleteService()
-        newlyInsertedDataObserver = NewlyInsertedDataObserver()
+        newlyInsertedDataObserver = SupabaseDataObserver()
     }
 }
 

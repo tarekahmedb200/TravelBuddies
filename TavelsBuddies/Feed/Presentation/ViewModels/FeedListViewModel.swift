@@ -18,7 +18,8 @@ class FeedListViewModel: ObservableObject {
     
     // MARK: - Private Properties (Use Cases)
     private let getAllFeedsUseCase: GetAllFeedsUseCase
-    private let observeNewlyInsertedFeedsUseCase: ObserveNewlyInsertedFeedsUseCase
+    private let deleteFeedUseCase: DeleteFeedUseCase
+    private let observeNewlyInsertedFeedsUseCase: ObserveFeedsChangesUseCase
     private let getAllFeedLikesUseCase: GetAllFeedsLikesUseCase
     private let likeFeedUseCase: LikeFeedUseCase
     private let unlikeFeedUseCase: UnLikeFeedUseCase
@@ -28,6 +29,7 @@ class FeedListViewModel: ObservableObject {
     
     private let getFeedMediaDatasUseCase : GetFeedMediaDatasUseCase
     private let getActualFeedMediaUseCase : GetActualFeedMediaUseCase
+    private let deleteActualFeedMediaUseCase : DeleteActualFeedMediaUseCase
     
     private let coordinator: any FeedCoordinating
     
@@ -48,9 +50,11 @@ class FeedListViewModel: ObservableObject {
         getProfilesUseCase: GetProfilesUseCase,
         getCurrentProfileUseCase: GetCurrentProfileUseCase,
         getProfileImageUseCase: GetProfileImageUseCase,
-        observeNewlyInsertedFeedsUseCase: ObserveNewlyInsertedFeedsUseCase,
+        observeNewlyInsertedFeedsUseCase: ObserveFeedsChangesUseCase,
         getFeedMediaDatasUseCase : GetFeedMediaDatasUseCase,
         getActualFeedMediaUseCase : GetActualFeedMediaUseCase,
+        deleteActualFeedMediaUseCase : DeleteActualFeedMediaUseCase,
+        deleteFeedUseCase: DeleteFeedUseCase,
         coordinator: any FeedCoordinating
     ) {
         self.getAllFeedsUseCase = getAllFeedsUseCase
@@ -63,8 +67,12 @@ class FeedListViewModel: ObservableObject {
         self.observeNewlyInsertedFeedsUseCase = observeNewlyInsertedFeedsUseCase
         self.getFeedMediaDatasUseCase = getFeedMediaDatasUseCase
         self.getActualFeedMediaUseCase = getActualFeedMediaUseCase
+        self.deleteActualFeedMediaUseCase = deleteActualFeedMediaUseCase
+        self.deleteFeedUseCase = deleteFeedUseCase
         self.coordinator = coordinator
-    
+        
+        
+        observeNewlyInsertedFeeds()
     }
 }
 
@@ -81,6 +89,10 @@ extension FeedListViewModel {
     
     func showCreateFeed() {
         coordinator.presentFullScreenCover(.createFeed)
+    }
+    
+    func showUpdateFeed(feedUIModel: FeedUIModel) {
+        coordinator.presentFullScreenCover(.updateFeed(feed: feedUIModel, onDismiss: {}))
     }
 }
 
@@ -120,10 +132,22 @@ extension FeedListViewModel {
     
     func observeNewlyInsertedFeeds() {
         Task {
-            for await feed in observeNewlyInsertedFeedsUseCase.execute() {
-                let uiModel = feed.toUImodel()
-                feedUIModels.insert(uiModel, at: 0)
-                try await handleNewFeeds([feed])
+            for await (feed,crudType) in observeNewlyInsertedFeedsUseCase.execute() {
+                
+                // Delay before processing each event
+                try? await Task.sleep(for: .seconds(1))
+                
+                switch crudType {
+                case .insert:
+                    let uiModel = feed.toUImodel()
+                    feedUIModels.insert(uiModel, at: 0)
+                    try await handleNewFeeds([feed])
+                case .update:
+                    try await updateExistingFeeds([feed])
+                case .delete:
+                    try await deleteExistingFeeds([feed.id])
+                }
+            
             }
         }
     }
@@ -237,10 +261,15 @@ extension FeedListViewModel {
     }
     
     private func fillfeedLikeUIModels(feeds: [Feed]) async throws {
-        let feedIDs = feeds.map { $0.id }
-        feedLikes = try await getAllFeedLikesUseCase.execute(feedIDs: feedIDs)
+        let feedIDs = feeds
+            .map { $0.id }
+            .filter { feedId in
+                !feedLikes.contains(where: { $0.feedID == feedId })
+            }
+        
+        let fetchedFeedLikes = try await getAllFeedLikesUseCase.execute(feedIDs: feedIDs)
+        feedLikes.append(contentsOf: fetchedFeedLikes)
     }
-    
     
     private func fillFeedMediaMetaDatasUIModelCache(feeds: [Feed]) async throws {
         let feedIds = feeds
@@ -280,21 +309,179 @@ extension FeedListViewModel {
             }
         }
         
+    }
+    
+}
+
+
+// MARK: - Update Feeds
+extension FeedListViewModel {
+    
+    private func updateExistingFeeds(_ feeds: [Feed]) async throws {
+        try await withThrowingTaskGroup(of: Void.self) { group in
+            
+            group.addTask { [weak self] in
+                try await self?.updateFeedUIModelsContents(feeds: feeds)
+            }
+            
+            group.addTask { [weak self] in
+                try await self?.updateFeedLikeUIModels(feeds: feeds)
+            }
+            
+            group.addTask { [weak self] in
+                try await self?.updateFeedMediaMetaDatasUIModelCache(feeds: feeds)
+            }
+            
+            try await group.waitForAll()
+        }
         
-        print(self.feedMediaMetaDataUIModelsCache)
+        updateFeedUIModels(feeds)
+    }
+    
+    private func updateFeedUIModelsContents(feeds: [Feed]) async throws {
+       
+        for feed in feeds {
+            if let index = self.feedUIModels.firstIndex(where: {  $0.id == feed.id  }) {
+                self.feedUIModels[index].content = feed.content
+            }
+        }
+    }
+        
+    private func updateFeedLikeUIModels(feeds: [Feed]) async throws {
+        let feedIDs = feeds
+            .map { $0.id }
+            
+        let fetchedFeedLikes = try await getAllFeedLikesUseCase.execute(feedIDs: feedIDs)
+        let fetchedFeedLikesIDS = Set(fetchedFeedLikes.map(\.feedID))
+        
+        
+        for feedId in feedIDs {
+            if feedLikes.contains(where: { $0.feedID == feedId }) && !fetchedFeedLikesIDS.contains(feedId) {
+                try await unlikeFeedUseCase.execute(feedID: feedId)
+                feedLikes.removeAll(where: { $0.feedID == feedId })
+            } else if !feedLikes.contains(where: { $0.feedID == feedId }) && fetchedFeedLikesIDS.contains(feedId) {
+                if let fetchedFeedLike = fetchedFeedLikes.first(where: { $0.feedID == feedId }) {
+                    feedLikes.append(fetchedFeedLike)
+                }
+            }
+         }
+    }
+    
+    private func updateFeedMediaMetaDatasUIModelCache(feeds: [Feed]) async throws {
+        let feedIds = feeds
+            .map { $0.id }
+           
+        var feedMetaDatasUIModels = try await getFeedMediaDatasUseCase.execute(feedIds: feedIds).map {
+            $0.toUIModel()
+        }
+        
+        try await withThrowingTaskGroup(of: (Data?,UUID?).self) { group in
+            
+            for feedMetaDataUIModel in feedMetaDatasUIModels {
+                group.addTask {
+                    (try? await self.getActualFeedMediaUseCase.execute(feedMediaDataID: feedMetaDataUIModel.id), feedMetaDataUIModel.id)
+                }
+            }
+            
+            for try await (feedImageData, feedMetaDataUIModelId) in group {
+                if let feedImageData = feedImageData {
+                    if let index = feedMetaDatasUIModels.firstIndex(where: { $0.id == feedMetaDataUIModelId }) {
+                        feedMetaDatasUIModels[index].feedImageData = feedImageData
+                    }
+                }
+            }
+        }
+        
+        for feedId in feedIds {
+            feedMediaMetaDataUIModelsCache[feedId]?.removeAll()
+        }
+        
+        for feedMetaDataUIModel in feedMetaDatasUIModels {
+            if let feedId = feedMetaDataUIModel.feedId {
+                self.feedMediaMetaDataUIModelsCache[feedId,default: []].append(feedMetaDataUIModel)
+            }
+        }
         
     }
     
+}
+
+
+// MARK: - Delete Feeds
+extension FeedListViewModel {
     
+    func deleteFeedOperation(feedUIModel: FeedUIModel) {
+        Task {
+            do {
+                try await deleteExistingFeeds([feedUIModel.id])
+            } catch {
+                print(error)
+                print(error.localizedDescription)
+                errorMessage = error.localizedDescription
+            }
+        }
+    }
+    
+    private func deleteExistingFeeds(_ feedIDs: [UUID]) async throws {
+        try await withThrowingTaskGroup(of: Void.self) { group in
+            
+            group.addTask { [weak self] in
+                try await self?.deleteFeedUIModels(feedIDs: feedIDs)
+            }
+            
+            group.addTask { [weak self] in
+                try await self?.deleteFeedLikeUIModels(feedIDs: feedIDs)
+            }
+            
+            group.addTask { [weak self] in
+                try await self?.deleteFeedMediaMetaDatasUIModelCache(feedIDs: feedIDs)
+            }
+            
+            try await group.waitForAll()
+        }
+        
+    }
+    
+    private func deleteFeedUIModels(feedIDs: [UUID]) async throws {
+        var deletedFeedIDs: [UUID] = []
+        
+        try await withThrowingTaskGroup(of: UUID.self) { [weak self] group in
+            
+            for feedId in feedIDs {
+                group.addTask {
+                    let fetchedFeedMediaMetaDatas = await self?.feedMediaMetaDataUIModelsCache[feedId] ?? []
+                    try await self?.deleteFeedUseCase.execute(feedID: feedId, feedMetaDatas: fetchedFeedMediaMetaDatas)
+                    return feedId
+                }
+            }
+            
+            for try await deleteFeedID in group {
+                deletedFeedIDs.append(deleteFeedID)
+            }
+        }
+        
+        feedUIModels.removeAll(where: { deletedFeedIDs.contains($0.id) })
+    }
+    
+    private func deleteFeedLikeUIModels(feedIDs: [UUID]) async throws {
+        feedLikes.removeAll(where: { feedIDs.contains($0.feedID) })
+    }
+    
+    private func deleteFeedMediaMetaDatasUIModelCache(feedIDs: [UUID]) async throws {
+        for feedId in feedIDs {
+            feedMediaMetaDataUIModelsCache[feedId]?.removeAll()
+        }
+    }
     
 }
+
 
 // MARK: - UI Model Updates
 extension FeedListViewModel {
     
     private func updateFeedUIModels(_ sortedFeeds: [Feed]) {
         for feed in sortedFeeds {
-            if var index = feedUIModels.firstIndex(where: { $0.id == feed.id }) {
+            if let index = feedUIModels.firstIndex(where: { $0.id == feed.id }) {
                 
                 feedUIModels[index].profileUIModel = profileUIModelCache[feed.profileId]
                 feedUIModels[index].profileUIModel?.profileImageData = profilesImagesCache[feed.profileId]
@@ -313,3 +500,4 @@ extension FeedListViewModel {
         }
     }
 }
+

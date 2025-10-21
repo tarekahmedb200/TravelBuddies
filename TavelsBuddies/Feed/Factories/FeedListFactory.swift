@@ -36,7 +36,11 @@ final class FeedListFactory {
             observeNewlyInsertedFeedsUseCase: dependencies.makeObserveNewlyInsertedFeedsUseCase(),
             getFeedMediaDatasUseCase: dependencies.makeFeedMediaDatasUseCase(),
             getActualFeedMediaUseCase: dependencies.makeGetActualFeedMediaUseCase(),
-            coordinator: self.coordinator)
+            deleteActualFeedMediaUseCase: dependencies.makeDeleteActualFeedMediaUseCase(),
+            deleteFeedUseCase: dependencies.makeDeleteFeedUseCase(),
+            coordinator: self.coordinator
+        )
     }
     
 }
+
